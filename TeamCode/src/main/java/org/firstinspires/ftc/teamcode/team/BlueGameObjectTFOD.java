@@ -185,18 +185,14 @@ public class BlueGameObjectTFOD extends LinearOpMode {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-            int location = 0;
+            int location = 3;//preset to right
             //new code added
             double centerX = recognition.getImageWidth()/2;
-            double margin = 100;
             if(recognition.getConfidence() >.80) {
-                if (x < centerX - margin) {
+                if (x < centerX) {
                     location = 1;//left
                 }
-                if (x > centerX + margin) {
-                    location = 3;//right
-                }
-                if (x >= centerX - margin && x <= centerX + margin) {
+                if (x > centerX) {
                     location = 2;//center
                 }
             }
