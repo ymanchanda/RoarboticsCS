@@ -185,20 +185,16 @@ public class RedGameObjectTFOD extends LinearOpMode {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-            int location = 3;//preset to right
-            //new code added
-            double centerX = recognition.getImageWidth()/2;
-            if(recognition.getConfidence() >.80) {
-                if (x < centerX) {
-                    location = 1;//left
-                }
-                if (x > centerX) {
-                    location = 2;//center
-                }
+            int location = 3;
+            double centerX = recognition.getImageWidth();
+            if (x < centerX) {
+                location = 1;//left
+            }
+            if (x > centerX) {
+                location = 2;//center
             }
 
-            telemetry.addData("location:", location);
-            telemetry.addData("confidence:", recognition.getConfidence());
+            telemetry.addData(""," ");
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());

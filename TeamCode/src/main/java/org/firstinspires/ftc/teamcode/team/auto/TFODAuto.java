@@ -60,8 +60,6 @@ public class TFODAuto extends LinearOpMode {
                     if (recog != 0){
                         if(oldRecog != 0) {
                             if (CSVP.detect() == recog){
-                                //confidence = recog.getConfidence();
-                                //label = recog.getLabel();
                                 oldRecog = recog;
                             }
                         }

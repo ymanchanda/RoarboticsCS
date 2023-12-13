@@ -155,25 +155,23 @@ public class BlueLeftFTC extends LinearOpMode {
                     telemetry.addLine("in the wait0 state");
                     recog = CSVP.detect();
                     detectCounter++;
-                    while(detectCounter <= 3){// make it so the code runs through the detection 3 times
-                        if (recog != 0) {//edited
-                            if (oldRecog != 0) {//edited
-                                if (CSVP.detect() == recog) {
-                                    //confidence = recog.getConfidence();
-                                    //label = recog.getLabel(); //object name (redObject...)
-                                    oldRecog = recog;
-                                    detectCounter++;
-                                    //add if location detected is left center or right (1,2,3) then itll move accordingly
-                                }
-                            } else {
+                    if (recog != 0){//edited
+                        if(oldRecog != 0) {//edited
+                            if (CSVP.detect() == recog){
+                                //confidence = recog.getConfidence();
+                                //label = recog.getLabel(); //object name (redObject...)
                                 oldRecog = recog;
+                                detectCounter++;
+                                //add if location detected is left center or right (1,2,3) then itll move accordingly
                             }
                         }
-                        else {
-                            telemetry.addLine("NULL");
+                        else{
+                            oldRecog = recog;
                         }
-                    }// for while loop
-
+                    }
+                    else {
+                        telemetry.addLine("NULL");
+                    }
                     if (waitTimer.milliseconds() > 3000 && confidence > 0.01){
                         currentState = State.CLAWCLOSE;
                         placement = recog;
@@ -261,9 +259,9 @@ public class BlueLeftFTC extends LinearOpMode {
 //                            currentState = State.TOSTACK;
 //                        }
 //                        else{
-                            drive.robot.getLiftSubsystem().retract();
-                            currentState = State.PARK;
-                       // }
+                        drive.robot.getLiftSubsystem().retract();
+                        currentState = State.PARK;
+                        // }
                         waitTimer.reset();
                     }
                     break;

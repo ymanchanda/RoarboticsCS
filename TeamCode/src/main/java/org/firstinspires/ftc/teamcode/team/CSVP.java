@@ -40,18 +40,19 @@ public class CSVP {
     public int detect(){
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         // Step through the list of recognitions and display info for each one.
+        int location = 3;//preset to right
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
 
-            int location = 3;//preset to right
             //new code added
             double centerX = recognition.getImageWidth()/2;
+
             if(recognition.getConfidence() >.80) {
-                if (x < centerX) {
+                if (x < centerX ) {
                     location = 1;//left
                 }
-                if (x > centerX) {
+                if (x > centerX ) {
                     location = 2;//center
                 }
             }
@@ -59,7 +60,7 @@ public class CSVP {
             return location;
         }   // end for() loop
         //return 0+"null , null;
-        return 3; // otherwise assumes right position
+        return 3;
     }
 
     /**
@@ -81,10 +82,10 @@ public class CSVP {
                 // The following default settings are available to un-comment and edit as needed to
                 // set parameters for custom models.
                 //.setModelLabels(LABELS)
-                //.setIsModelTensorFlow2(true)
-                //.setIsModelQuantized(true)
-                //.setModelInputSize(300)
-                //.setModelAspectRatio(16.0 / 9.0)
+                .setIsModelTensorFlow2(true)
+                .setIsModelQuantized(true)
+                .setModelInputSize(300)
+                .setModelAspectRatio(16.0 / 9.0)
 
                 .build();
 
@@ -102,7 +103,7 @@ public class CSVP {
         //builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableLiveView(true);
+       // builder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
         //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
