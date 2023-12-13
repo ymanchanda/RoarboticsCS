@@ -155,23 +155,24 @@ public class BlueLeftFTC extends LinearOpMode {
                     telemetry.addLine("in the wait0 state");
                     recog = CSVP.detect();
                     detectCounter++;
-                    if (recog != 0){//edited
-                        if(oldRecog != 0) {//edited
-                            if (CSVP.detect() == recog){
-                                //confidence = recog.getConfidence();
-                                //label = recog.getLabel(); //object name (redObject...)
+                    while(detectCounter<=3) {
+                        if (recog != 0) {//edited
+                            if (oldRecog != 0) {//edited
+                                if (CSVP.detect() == recog) {
+                                    //confidence = recog.getConfidence();
+                                    //label = recog.getLabel(); //object name (redObject...)
+                                    oldRecog = recog;
+                                    detectCounter++;
+                                    //add if location detected is left center or right (1,2,3) then itll move accordingly
+                                }
+                            } else {
                                 oldRecog = recog;
-                                detectCounter++;
-                                //add if location detected is left center or right (1,2,3) then itll move accordingly
                             }
+                        } else {
+                            telemetry.addLine("NULL");
                         }
-                        else{
-                            oldRecog = recog;
-                        }
-                    }
-                    else {
-                        telemetry.addLine("NULL");
-                    }
+                    }//for while
+
                     if (waitTimer.milliseconds() > 3000 && confidence > 0.01){
                         currentState = State.CLAWCLOSE;
                         placement = recog;
