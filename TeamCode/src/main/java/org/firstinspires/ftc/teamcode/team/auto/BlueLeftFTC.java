@@ -78,7 +78,7 @@ public class BlueLeftFTC extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         drive.robot.getLiftSubsystem().getStateMachine().updateState(LiftStateMachine.State.IDLE);
         drive.robot.getDroneSubsystem().getStateMachine().updateState(DroneStateMachine.State.OPEN);
-        drive.robot.getOuttakeSubsystem().getStateMachine().updateState(OuttakeStateMachine.State.INIT);
+        drive.robot.getOuttakeSubsystem().getStateMachine().updateState(OuttakeStateMachine.State.FORWARD);
         //drive.robot.getCappingArmSubsystem().getStateMachine().updateState(ArmStateMachine.State.REST);
 
         TrajectorySequence traj0 = drive.trajectorySequenceBuilder(startPose)
@@ -123,7 +123,12 @@ public class BlueLeftFTC extends LinearOpMode {
         double t1 = waitTimer.milliseconds();
 
         CSVP = new CSVP();
-        CSVP.initTfod(hardwareMap);
+        //the next line detects pixel
+        //CSVP.initTfod(hardwareMap);
+        //the next line detects red
+        //CSVP.initTfod(hardwareMap, "Red");
+        //the next line detects blue
+        CSVP.initTfod(hardwareMap, "Blue");
 
         double t2 = waitTimer.milliseconds();
 
@@ -131,8 +136,6 @@ public class BlueLeftFTC extends LinearOpMode {
         telemetry.update();
 
         int detectCounter = 0;
-        //double confidence = 0;
-        //String label = "NONE";
         int oldRecog = 0;
         int recog;
 
@@ -140,8 +143,6 @@ public class BlueLeftFTC extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-
-
 
         currentState = State.WAIT0;
 
@@ -247,7 +248,7 @@ public class BlueLeftFTC extends LinearOpMode {
 
                 case MOVEARMBACK:
                     if(waitTimer.milliseconds() >= 1000){
-                        drive.robot.getOuttakeSubsystem().getStateMachine().updateState(OuttakeStateMachine.State.INIT);
+                        drive.robot.getOuttakeSubsystem().getStateMachine().updateState(OuttakeStateMachine.State.FORWARD);
                         currentState = State.LIFTDOWN;
                         waitTimer.reset();
                     }
@@ -255,14 +256,8 @@ public class BlueLeftFTC extends LinearOpMode {
 
                 case LIFTDOWN:
                     if(waitTimer.milliseconds() >= 1000){
-//                        if(counter < 1) {
-//                            drive.robot.getLiftSubsystem().extend(6d);
-//                            currentState = State.TOSTACK;
-//                        }
-//                        else{
                         drive.robot.getLiftSubsystem().retract();
                         currentState = State.PARK;
-                        // }
                         waitTimer.reset();
                     }
                     break;
