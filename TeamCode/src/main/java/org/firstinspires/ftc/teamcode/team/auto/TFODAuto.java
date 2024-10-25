@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+//import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.team.CSVP;
 
@@ -14,7 +14,7 @@ public class TFODAuto extends LinearOpMode {
     CSBaseLIO drive;
     private static double dt;
     private static TimeProfiler updateRuntime;
-    private Recognition finalRecog = null;
+    //private Recognition finalRecog = null;
 
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
