@@ -177,6 +177,7 @@ public class BlueLeftFTC extends LinearOpMode {
                     }
                     break;
 
+
                 case CLAWCLOSE:
                     telemetry.addData("Location: ", placement); // added to return if left center or right is detected
                     //telemetry.addData("Label: ", label);
