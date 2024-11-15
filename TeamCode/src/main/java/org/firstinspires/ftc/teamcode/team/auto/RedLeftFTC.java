@@ -38,7 +38,6 @@ public class RedLeftFTC extends LinearOpMode {
         WAIT0,
         FORWARD,
         TODROP,
-
         INITSTRAFE,
         MOVEBACK,
         IDLE,

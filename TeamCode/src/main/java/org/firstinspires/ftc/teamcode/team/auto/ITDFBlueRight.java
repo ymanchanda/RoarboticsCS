@@ -7,7 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-public class ITDFBlueRight {
+public class ITDFBlueRight
+{
 
     
 }
