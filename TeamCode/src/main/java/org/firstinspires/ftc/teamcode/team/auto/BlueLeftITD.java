@@ -257,11 +257,6 @@ public class BlueLeftITD extends LinearOpMode {
                         break;
 
                     case CLAWOPEN:
-                        if(waitTimer.milliseconds() >= 1000){
-                            drive.robot.getDroneSubsystem().getStateMachine().updateState(DroneStateMachine.State.OPEN);
-                            currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftFTC.State.MOVEARMBACK;
-                            waitTimer.reset();
-                        }
                         break;
 
                     case MOVEARMBACK:
@@ -274,15 +269,9 @@ public class BlueLeftITD extends LinearOpMode {
 
                     case LIFTDOWN:
                         currentState = State.TOSTACK;
-                        }
                         break;
 
                     case TOSTACK:
-                        if(waitTimer.milliseconds() >= 2000){
-                            drive.followTrajectorySequenceAsync(traj3);
-                            currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftFTC.State.GRAB;
-                            waitTimer.reset();
-                        }
                         break;
 
                     case GRAB:
