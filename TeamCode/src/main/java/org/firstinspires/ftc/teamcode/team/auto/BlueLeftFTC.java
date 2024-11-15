@@ -65,7 +65,6 @@ public class BlueLeftFTC extends LinearOpMode {
     boolean hasCVInit = false;
     int placement = 1;
     float confidence = 0;
-
     boolean tf = false;
 
     int counter = 0;
