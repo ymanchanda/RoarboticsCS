@@ -27,9 +27,9 @@ public class RedLeftFTC extends LinearOpMode {
     static final Vector2d Traj2 = new Vector2d(38,-43);
     static final Vector2d Traj3 = new Vector2d(12, -26);
     static final Vector2d Traj4 = new Vector2d(12, 72);
-//    static final Vector2d Location1 = new Vector2d(-52, -13);
-//    static final Vector2d Location2 = new Vector2d(-34, -13);
-//    static final Vector2d Location3 = new Vector2d(-12,-13);
+    static final Vector2d Location1 = new Vector2d(-52, -13);
+    static final Vector2d Location2 = new Vector2d(-34, -13);
+    static final Vector2d Location3 = new Vector2d(-12,-13);
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);

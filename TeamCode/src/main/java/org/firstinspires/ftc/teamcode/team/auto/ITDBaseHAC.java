@@ -44,11 +44,11 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubEx;
-import org.firstinspires.ftc.teamcode.team.CSAutoRobotLIO;
+import org.firstinspires.ftc.teamcode.team.ITDAutoRobotHAC;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.team.subsystems.CSExpansionHubsLIO;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDExpansionHubsHAC;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -57,12 +57,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 //If the import error (where 5 of them turn red) happens, then go to FILE and Invalidate and Restart Caches
-// Simple mecanum drive hardware implementation for REV hardware.
+//Simple mecanum drive hardware implementation for REV hardware.
 @Config
-public class CSBaseLIO extends MecanumDrive {
+public class ITDBaseHAC extends MecanumDrive {
 
-    public CSAutoRobotLIO robot = new CSAutoRobotLIO();
-    private CSExpansionHubsLIO expansionHubs;
+    public ITDAutoRobotHAC robot = new ITDAutoRobotHAC();
+    private ITDExpansionHubsHAC expansionHubs;
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
@@ -104,25 +104,17 @@ public class CSBaseLIO extends MecanumDrive {
     private MotionProfile turnProfile;
     private double turnStart;
 
-   // private TrajectoryFollower follower;
+    // private TrajectoryFollower follower;
 
     private LinkedList<Pose2d> poseHistory;
 
-    //public DcMotorEx leftFront, leftRear, rightRear, rightFront;
-    //public RevMotor shooter1, shooter2, forkliftMotor, intakeMotor;
-    //public  RevServo elevatorServo, flicker1, flicker2;
-
-   // private List<DcMotorEx> motors;
-
- //   private VoltageSensor batteryVoltageSensor;
-
     private Pose2d lastPoseOnTurn;
 
-    public CSBaseLIO(HardwareMap hardwareMap) {
+    public ITDBaseHAC(HardwareMap hardwareMap) {
         this(hardwareMap, false);
     }
 
-    public CSBaseLIO(HardwareMap hardwareMap, boolean IsteleOp) {
+    public ITDBaseHAC(HardwareMap hardwareMap, boolean IsteleOp) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         robot.init(hardwareMap);
         //if (!IsteleOp)
@@ -159,7 +151,7 @@ public class CSBaseLIO extends MecanumDrive {
         //blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        setExpansionHubs(new CSExpansionHubsLIO(robot,
+        setExpansionHubs(new ITDExpansionHubsHAC(robot,
                 hardwareMap.get(ExpansionHubEx.class, "Control Hub"),
                 hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"))
         );
@@ -220,22 +212,6 @@ public class CSBaseLIO extends MecanumDrive {
         );
     }
 
-//    public void turnAsync(double angle) {
-//        double heading = getPoseEstimate().getHeading();
-//
-//        lastPoseOnTurn = getPoseEstimate();
-//
-//        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-//                new MotionState(heading, 0, 0, 0),
-//                new MotionState(heading + angle, 0, 0, 0),
-//                MAX_ANG_VEL,
-//                MAX_ANG_ACCEL
-//        );
-//
-//        turnStart = clock.seconds();
-//        mode = Mode.TURN;
-//    }
-
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(getPoseEstimate())
@@ -267,111 +243,13 @@ public class CSBaseLIO extends MecanumDrive {
     }
 
     public void cancelFollowing() {
-        mode = Mode.IDLE;
+        mode = ITDBaseHAC.Mode.IDLE;
     }
 
     public Pose2d getLastError() {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
-//    public Pose2d getLastError() {
-//        switch (mode) {
-//            case FOLLOW_TRAJECTORY:
-//                return follower.getLastError();
-//            case TURN:
-//                return new Pose2d(0, 0, turnController.getLastError());
-//            case IDLE:
-//                return new Pose2d();
-//        }
-//        throw new AssertionError();
-//    }
-
-//    public void update() {
-//        updatePoseEstimate();
-//
-//        Pose2d currentPose = getPoseEstimate();
-//        Pose2d lastError = getLastError();
-//
-//        poseHistory.add(currentPose);
-//
-//        if (POSE_HISTORY_LIMIT > -1 && poseHistory.size() > POSE_HISTORY_LIMIT) {
-//            poseHistory.removeFirst();
-//        }
-//
-//        TelemetryPacket packet = new TelemetryPacket();
-//        Canvas fieldOverlay = packet.fieldOverlay();
-//
-//        packet.put("mode", mode);
-//
-//        packet.put("x", currentPose.getX());
-//        packet.put("y", currentPose.getY());
-//        packet.put("heading (deg)", Math.toDegrees(currentPose.getHeading()));
-//
-//        packet.put("xError", lastError.getX());
-//        packet.put("yError", lastError.getY());
-//        packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
-//
-//        switch (mode) {
-//            case IDLE:
-//                // do nothing
-//                break;
-//            case TURN: {
-//                double t = clock.seconds() - turnStart;
-//
-//                MotionState targetState = turnProfile.get(t);
-//
-//                turnController.setTargetPosition(targetState.getX());
-//
-//                double correction = turnController.update(currentPose.getHeading());
-//
-//                double targetOmega = targetState.getV();
-//                double targetAlpha = targetState.getA();
-//                setDriveSignal(new DriveSignal(new Pose2d(
-//                        0, 0, targetOmega + correction
-//                ), new Pose2d(
-//                        0, 0, targetAlpha
-//                )));
-//
-//                Pose2d newPose = lastPoseOnTurn.copy(lastPoseOnTurn.getX(), lastPoseOnTurn.getY(), targetState.getX());
-//
-//                fieldOverlay.setStroke("#4CAF50");
-//                DashboardUtil.drawRobot(fieldOverlay, newPose);
-//
-//                if (t >= turnProfile.duration()) {
-//                    mode = Mode.IDLE;
-//                    setDriveSignal(new DriveSignal());
-//                }
-//
-//                break;
-//            }
-//            case FOLLOW_TRAJECTORY: {
-//                setDriveSignal(follower.update(currentPose, getPoseVelocity()));
-//
-//                Trajectory trajectory = follower.getTrajectory();
-//
-//                fieldOverlay.setStrokeWidth(1);
-//                fieldOverlay.setStroke("#4CAF50");
-//                DashboardUtil.drawSampledPath(fieldOverlay, trajectory.getPath());
-//                double t = follower.elapsedTime();
-//                DashboardUtil.drawRobot(fieldOverlay, trajectory.get(t));
-//
-//                fieldOverlay.setStroke("#3F51B5");
-//                DashboardUtil.drawPoseHistory(fieldOverlay, poseHistory);
-//
-//                if (!follower.isFollowing()) {
-//                    mode = Mode.IDLE;
-//                    setDriveSignal(new DriveSignal());
-//                }
-//
-//                break;
-//            }
-//        }
-//
-//        fieldOverlay.setStroke("#3F51B5");
-//        DashboardUtil.drawRobot(fieldOverlay, currentPose);
-//
-//        dashboard.sendTelemetryPacket(packet);
-//    }
 
     public void update() {
         updatePoseEstimate();
@@ -492,11 +370,11 @@ public class CSBaseLIO extends MecanumDrive {
     }
 
 
-    public CSExpansionHubsLIO getExpansionHubs() {
+    public ITDExpansionHubsHAC getExpansionHubs() {
         return expansionHubs;
     }
 
-    public void setExpansionHubs(CSExpansionHubsLIO expansionHubs) {
+    public void setExpansionHubs(ITDExpansionHubsHAC expansionHubs) {
         this.expansionHubs = expansionHubs;
     }
     //
