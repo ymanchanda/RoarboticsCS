@@ -60,7 +60,7 @@ public class BlueLeftITD extends LinearOpMode {
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
-    private static final double LOWBASKET = 0d; //25.75 inches, 65.4 cm
+    private static final double LOWBASKET =  0d; //25.75 inches, 65.4 cm
     private static final double HIGHBASKET = 0d; //43 inches, 109.2 cm
 
     boolean tf = false;
