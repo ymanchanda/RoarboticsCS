@@ -4,8 +4,8 @@ import org.firstinspires.ftc.teamcode.lib.util.Namable;
 import org.firstinspires.ftc.teamcode.lib.util.Time;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 
-public class ITDClawIStateMachine extends TimedState<ITDClawIStateMachine.State> {
-    public ITDClawIStateMachine() {
+public class ITDClawStateMachine extends TimedState<ITDClawStateMachine.State> {
+    public ITDClawStateMachine() {
         super(State.OPEN);
     }
 

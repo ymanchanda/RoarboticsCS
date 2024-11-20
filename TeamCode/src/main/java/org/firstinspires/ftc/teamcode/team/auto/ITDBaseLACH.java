@@ -44,11 +44,11 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubEx;
-import org.firstinspires.ftc.teamcode.team.ITDAutoRobotHAC;
+import org.firstinspires.ftc.teamcode.team.ITDAutoRobotLACH;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.team.subsystems.ITDExpansionHubsHAC;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDExpansionHubsLACH;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -59,10 +59,10 @@ import java.util.List;
 //If the import error (where 5 of them turn red) happens, then go to FILE and Invalidate and Restart Caches
 //Simple mecanum drive hardware implementation for REV hardware.
 @Config
-public class ITDBaseHAC extends MecanumDrive {
+public class ITDBaseLACH extends MecanumDrive {
 
-    public ITDAutoRobotHAC robot = new ITDAutoRobotHAC();
-    private ITDExpansionHubsHAC expansionHubs;
+    public ITDAutoRobotLACH robot = new ITDAutoRobotLACH();
+    private ITDExpansionHubsLACH expansionHubs;
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(5, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
@@ -110,11 +110,11 @@ public class ITDBaseHAC extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    public ITDBaseHAC(HardwareMap hardwareMap) {
+    public ITDBaseLACH(HardwareMap hardwareMap) {
         this(hardwareMap, false);
     }
 
-    public ITDBaseHAC(HardwareMap hardwareMap, boolean IsteleOp) {
+    public ITDBaseLACH(HardwareMap hardwareMap, boolean IsteleOp) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         robot.init(hardwareMap);
         //if (!IsteleOp)
@@ -151,7 +151,7 @@ public class ITDBaseHAC extends MecanumDrive {
         //blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        setExpansionHubs(new ITDExpansionHubsHAC(robot,
+        setExpansionHubs(new ITDExpansionHubsLACH(robot,
                 hardwareMap.get(ExpansionHubEx.class, "Control Hub"),
                 hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"))
         );
@@ -243,7 +243,7 @@ public class ITDBaseHAC extends MecanumDrive {
     }
 
     public void cancelFollowing() {
-        mode = ITDBaseHAC.Mode.IDLE;
+        mode = ITDBaseLACH.Mode.IDLE;
     }
 
     public Pose2d getLastError() {
@@ -370,11 +370,11 @@ public class ITDBaseHAC extends MecanumDrive {
     }
 
 
-    public ITDExpansionHubsHAC getExpansionHubs() {
+    public ITDExpansionHubsLACH getExpansionHubs() {
         return expansionHubs;
     }
 
-    public void setExpansionHubs(ITDExpansionHubsHAC expansionHubs) {
+    public void setExpansionHubs(ITDExpansionHubsLACH expansionHubs) {
         this.expansionHubs = expansionHubs;
     }
     //

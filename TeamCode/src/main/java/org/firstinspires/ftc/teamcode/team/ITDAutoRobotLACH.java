@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
  *          Right Hang motor -> RH
  * Misc. sensors naming convention:
  */
-public class ITDAutoRobotHAC {
+public class ITDAutoRobotLACH {
     private TimeProfiler matchRuntime;
     private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
