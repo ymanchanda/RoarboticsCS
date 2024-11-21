@@ -2,25 +2,25 @@ package org.firstinspires.ftc.teamcode.team.subsystems;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.lib.drivers.RevServo;
-import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 
-public class ITDClawSubsystem implements ISubsystem<ITDClawStateMachine, ITDClawStateMachine.State> {
-    private static ITDClawStateMachine itdClawStateMachine;
-    private RevServo ClawServo;
+public class ITDClawArmSubsystem implements ISubsystem<ITDClawArmStateMachine, ITDClawArmStateMachine.State> {
+    private static ITDClawArmStateMachine itdClawArmStateMachine;
+    private RevServo ClawArmServo;
 
 
-    public ITDClawSubsystem(RevServo clawServo){
-        setClawStateMachine(new ITDClawStateMachine());
+    public ITDClawArmSubsystem(RevServo clawServo){
+        setClawStateMachine(new ITDClawArmStateMachine());
         setGripperServo(clawServo);
     }
 
     @Override
-    public ITDClawStateMachine getStateMachine() {
-        return itdClawStateMachine;
+    public ITDClawArmStateMachine getStateMachine() {
+        return itdClawArmStateMachine;
     }
 
     @Override
-    public ITDClawStateMachine.State getState() {
+    public ITDClawArmStateMachine.State getState() {
         return getStateMachine().getState();
     }
 
@@ -50,16 +50,16 @@ public class ITDClawSubsystem implements ISubsystem<ITDClawStateMachine, ITDClaw
         getClawServo().setPosition(getState().getPosition());
     }
 
-    public static void setClawStateMachine(ITDClawStateMachine gripperStateMachine) {
-        ITDClawSubsystem.itdClawStateMachine = gripperStateMachine;
+    public static void setClawStateMachine(ITDClawArmStateMachine gripperStateMachine) {
+        ITDClawArmSubsystem.itdClawArmStateMachine = gripperStateMachine;
     }
 
     public RevServo getClawServo() {
-        return ClawServo;
+        return ClawArmServo;
     }
 
 
     public void setGripperServo(RevServo clawServo) {
-        this.ClawServo = clawServo;
+        this.ClawArmServo = clawServo;
     }
 }

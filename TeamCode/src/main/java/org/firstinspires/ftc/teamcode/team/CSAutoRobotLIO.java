@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.team.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.team.subsystems.ExpansionHubs;
-import org.firstinspires.ftc.teamcode.team.subsystems.LiftSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDLiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
@@ -41,7 +41,7 @@ public class CSAutoRobotLIO {
     private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
-    private LiftSubsystem liftSubsystem;
+    private ITDLiftSubsystem liftSubsystem;
     private OuttakeSubsystem outtakeSubsystem;
     private DroneSubsystem droneSubsystem;
     private IntakeSubsystem intakeSubsystem;
@@ -65,7 +65,7 @@ public class CSAutoRobotLIO {
                 new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
         });
 
-        setLiftSubsystem(new LiftSubsystem(getMotors()[0]));
+        setLiftSubsystem(new ITDLiftSubsystem(getMotors()[0]));
         setIntakeSubsystem(new IntakeSubsystem(getMotors()[1]));
         setOuttakeSubsystem(new OuttakeSubsystem(getServos()[0]));
         setDroneSubsystem(new DroneSubsystem(getServos()[1]));
@@ -111,11 +111,11 @@ public class CSAutoRobotLIO {
         this.drive = drive;
     }
 
-    public LiftSubsystem getLiftSubsystem() {
+    public ITDLiftSubsystem getLiftSubsystem() {
         return liftSubsystem;
     }
 
-    public void setLiftSubsystem(LiftSubsystem liftSubsystem){
+    public void setLiftSubsystem(ITDLiftSubsystem liftSubsystem){
         this.liftSubsystem = liftSubsystem;
     }
 
