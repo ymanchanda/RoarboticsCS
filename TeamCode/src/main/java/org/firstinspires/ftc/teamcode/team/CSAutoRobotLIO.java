@@ -9,13 +9,11 @@ import org.firstinspires.ftc.teamcode.lib.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
-import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
-import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
 import org.firstinspires.ftc.teamcode.team.subsystems.ExpansionHubs;
-import org.firstinspires.ftc.teamcode.team.subsystems.ITDLiftSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.LiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
@@ -43,8 +41,10 @@ public class CSAutoRobotLIO {
     private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
-    private ITDLiftSubsystem liftSubsystem;
-    private ITDClawSubsystem ITDClawSubsystem;
+    private LiftSubsystem liftSubsystem;
+    private OuttakeSubsystem outtakeSubsystem;
+    private DroneSubsystem droneSubsystem;
+    private IntakeSubsystem intakeSubsystem;
     private RevMotor[] motors;
     private RevServo[] servos;
 
@@ -65,9 +65,10 @@ public class CSAutoRobotLIO {
                 new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
         });
 
-        setLiftSubsystem(new ITDLiftSubsystem(getMotors()[0]));
+        setLiftSubsystem(new LiftSubsystem(getMotors()[0]));
         setIntakeSubsystem(new IntakeSubsystem(getMotors()[1]));
-        setDroneSubsystem(new ITDClawStateMachine(getServos()[1]));
+        setOuttakeSubsystem(new OuttakeSubsystem(getServos()[0]));
+        setDroneSubsystem(new DroneSubsystem(getServos()[1]));
         setMatchRuntime(new TimeProfiler(false));
     }
     public RevMotor[] getMotors() {
@@ -110,11 +111,11 @@ public class CSAutoRobotLIO {
         this.drive = drive;
     }
 
-    public ITDLiftSubsystem getLiftSubsystem() {
+    public LiftSubsystem getLiftSubsystem() {
         return liftSubsystem;
     }
 
-    public void setLiftSubsystem(ITDLiftSubsystem liftSubsystem){
+    public void setLiftSubsystem(LiftSubsystem liftSubsystem){
         this.liftSubsystem = liftSubsystem;
     }
 
@@ -126,13 +127,20 @@ public class CSAutoRobotLIO {
         this.intakeSubsystem = intakeSubsystem;
     }
 
-
-    public DroneSubsystem getITDClawStateMachine() {
-        return ITDClawSubsystem;
+    public OuttakeSubsystem getOuttakeSubsystem() {
+        return outtakeSubsystem;
     }
 
-    public void setDroneSubsystem(DroneSubsystem ITDClawSubsystem){
-        this.ITDClawSubsystem = ITDClawSubsystem;
+    public void setOuttakeSubsystem(OuttakeSubsystem outtakeSubsystem){
+        this.outtakeSubsystem = outtakeSubsystem;
+    }
+
+    public DroneSubsystem getDroneSubsystem() {
+        return droneSubsystem;
+    }
+
+    public void setDroneSubsystem(DroneSubsystem droneSubsystem){
+        this.droneSubsystem = droneSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {

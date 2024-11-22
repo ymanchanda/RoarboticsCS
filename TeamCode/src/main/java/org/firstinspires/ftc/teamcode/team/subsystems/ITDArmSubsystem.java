@@ -6,9 +6,6 @@ import org.firstinspires.ftc.teamcode.lib.control.ControlConstants;
 import org.firstinspires.ftc.teamcode.lib.drivers.RevMotor;
 import org.firstinspires.ftc.teamcode.lib.motion.IMotionProfile;
 import org.firstinspires.ftc.teamcode.lib.motion.ResidualVibrationReductionMotionProfilerGenerator;
-import org.firstinspires.ftc.teamcode.lib.util.Time;
-import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
-import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.DbgLog;
 import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
 
@@ -29,7 +26,8 @@ import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
         V = 1 / 55d,
         A = 0d
 )
-public abstract class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmStateMachine.State>{
+
+public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmStateMachine.State>{
 
     private static final ControlConstants EXTEND_CONTROL_CONSTANTS;
     private static final ControlConstants RETRACT_CONTROL_CONSTANTS;
@@ -128,7 +126,7 @@ public abstract class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, 
 
     public void retract() {
         resetRunningSum();
-        setSetpoint(0d, false);
+        setSetpoint(0d);
         setDesiredSetpoint(0d);
     }
 
@@ -144,11 +142,8 @@ public abstract class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, 
         ITDArmSubsystem.itdArmStateMachine = itdArmStateMachine;
     }
 
-    public RevMotor getLeftArm() {
-        return leftArm;
-    }
-
-    public void setLeftArm(RevMotor LeftArm) {
+    public RevMotor getLeftArm() {return leftArm;}
+    public void setLeftArm(RevMotor leftArm) {
         this.leftArm = leftArm;
     }
 
@@ -156,15 +151,13 @@ public abstract class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, 
         return rightArm;
     }
 
-    public void setRightArm(RevMotor rightArm) {
-        this.rightArm = rightArm;
-    }
+    public void setRightArm(RevMotor rightArm) {this.rightArm = rightArm;}
 
     public static double getSetpoint() {
         return setpoint;
     }
 
-    public void setSetpoint(double setpoint, boolean forPoles) {
+    public void setSetpoint(double setpoint) {
         setDesiredSetpoint(setpoint);
         if(setpoint != getSetpoint() && (getExtensionProfile() == null || getExtensionProfile().isDone())) {
             if(setpoint != 0d) {
@@ -229,4 +222,28 @@ public abstract class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, 
     }
 
 
+    @Override
+    public ITDArmStateMachine getStateMachine() {
+        return null;
+    }
+
+    @Override
+    public ITDArmStateMachine.State getState() {
+        return null;
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void writeToTelemetry(Telemetry telemetry) {
+
+    }
 }

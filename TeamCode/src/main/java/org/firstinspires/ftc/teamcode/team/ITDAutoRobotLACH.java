@@ -9,40 +9,53 @@ import org.firstinspires.ftc.teamcode.lib.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
-import org.firstinspires.ftc.teamcode.team.subsystems.OuttakeSubsystem;
-import org.firstinspires.ftc.teamcode.team.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.team.subsystems.ExpansionHubs;
-import org.firstinspires.ftc.teamcode.team.subsystems.LiftSubsystem;
-import org.firstinspires.ftc.teamcode.team.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDExpansionHubsLACH;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDLiftSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDArmSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawArmSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
 
 /**
  * Motor naming convention:
  *     Drivetrain
- *         Front Left Wheel -> LF
- *         Back Left Wheel   -> LR
- *         Front Right Wheel -> RF
- *         Back Right Wheel  -> RR
+ *         Front Left Wheel     -> LF
+ *         Back Left Wheel      -> LR
+ *         Front Right Wheel    -> RF
+ *         Back Right Wheel     -> RR
+ *
  *     Arm
- *         Arm motor  -> Arm
- *     Claw
- *          Gripper -> Claw
+ *         Right Arm motor      -> RightArm
+ *         Left Arm motor       -> LeftArm
+ *
+ *     Lift
+ *          Lift motor          -> Lift
+ *
  *     Hang
- *          Left Hang motor -> LH
- *          Right Hang motor -> RH
- * Misc. sensors naming convention:
+ *          Hang motor          -> Hang
+ *
+ * Servo naming convention:
+ *     Claw
+ *         Claw   servo         -> Claw
+ *
+ *     ClawArm
+ *         ClawArm servo        -> ClawArm
+ *
+ *     Lock
+ *          Lock servo          -> Lock
+ *
  */
 public class ITDAutoRobotLACH {
     private TimeProfiler matchRuntime;
-    private ExpansionHubs expansionHubs;
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
-    private LiftSubsystem liftSubsystem;
-    private OuttakeSubsystem outtakeSubsystem;
-    private DroneSubsystem droneSubsystem;
-    private IntakeSubsystem intakeSubsystem;
+    private ITDExpansionHubsLACH itdExpansionHubsLACH;
+    private ITDLiftSubsystem itdLiftSubsystem;
+    private ITDArmSubsystem itdArmSubsystem;
+    private ITDClawSubsystem itdClawSubsystem;
+    private ITDClawArmSubsystem itdClawArmSubsystem;
     private RevMotor[] motors;
     private RevServo[] servos;
 
@@ -55,18 +68,19 @@ public class ITDAutoRobotLACH {
 
         setMotors(new RevMotor[] {
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, false, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Intake")), false, false, false, true, Motor.GOBILDA_435_RPM.getENCODER_TICKS_PER_REVOLUTION())
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm Right")), false, true, true, false, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093),
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm Left")), false, true, true, false, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093)
         });
 
         setServos(new RevServo[] {
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Outtake"))),
-                new RevServo((ExpansionHubServo)(hardwareMap.get("Drone")))
+                new RevServo((ExpansionHubServo)(hardwareMap.get("Claw"))),
+                new RevServo((ExpansionHubServo)(hardwareMap.get("ClawArm"))),
         });
 
-        setLiftSubsystem(new LiftSubsystem(getMotors()[0]));
-        setIntakeSubsystem(new IntakeSubsystem(getMotors()[1]));
-        setOuttakeSubsystem(new OuttakeSubsystem(getServos()[0]));
-        setDroneSubsystem(new DroneSubsystem(getServos()[1]));
+        setITDLiftSubsystem(new ITDLiftSubsystem(getMotors()[0]));
+        setITDArmSubsystem(new ITDArmSubsystem(getMotors()[1], getMotors()[2]));
+        setITDClawSubsystem(new ITDClawSubsystem(getServos()[0]));
+        setITDClawArmSubsystem(new ITDClawArmSubsystem(getServos()[1]));
         setMatchRuntime(new TimeProfiler(false));
     }
     public RevMotor[] getMotors() {
@@ -85,12 +99,12 @@ public class ITDAutoRobotLACH {
         this.servos = servos;
     }
 
-    public ExpansionHubs getExpansionHubs() {
-        return expansionHubs;
+    public ITDExpansionHubsLACH getExpansionHubs() {
+        return itdExpansionHubsLACH;
     }
 
-    public void setExpansionHubs(ExpansionHubs expansionHubs) {
-        this.expansionHubs = expansionHubs;
+    public void setITDExpansionHubsLACH(ITDExpansionHubsLACH itExpansionHubsLACH) {
+        this.itdExpansionHubsLACH = itExpansionHubsLACH;
     }
 
     public RobotStateEstimator getRobotStateEstimator() {
@@ -109,36 +123,34 @@ public class ITDAutoRobotLACH {
         this.drive = drive;
     }
 
-    public LiftSubsystem getLiftSubsystem() {
-        return liftSubsystem;
+    public ITDArmSubsystem getITDArmSubsystem() {
+        return itdArmSubsystem;
     }
 
-    public void setLiftSubsystem(LiftSubsystem liftSubsystem){
-        this.liftSubsystem = liftSubsystem;
+    public void setITDArmSubsystem(ITDArmSubsystem itdArmSubsystem){
+        this.itdArmSubsystem = itdArmSubsystem;
+    }
+    public ITDLiftSubsystem getITDLiftSubsystem() {
+        return itdLiftSubsystem;
     }
 
-    public IntakeSubsystem getIntakeSubsystem() {
-        return intakeSubsystem;
+    public void setITDLiftSubsystem(ITDLiftSubsystem itdLiftSubsystem){
+        this.itdLiftSubsystem = itdLiftSubsystem;
     }
 
-    public void setIntakeSubsystem(IntakeSubsystem intakeSubsystem){
-        this.intakeSubsystem = intakeSubsystem;
+    public ITDClawArmSubsystem getITDClawArmSubsystem() {
+        return itdClawArmSubsystem;
     }
 
-    public OuttakeSubsystem getOuttakeSubsystem() {
-        return outtakeSubsystem;
+    public void setITDClawArmSubsystem(ITDClawArmSubsystem itdClawArmSubsystem){
+        this.itdClawArmSubsystem = itdClawArmSubsystem;
+    }
+    public ITDClawSubsystem getITDClawSubsystem() {
+        return itdClawSubsystem;
     }
 
-    public void setOuttakeSubsystem(OuttakeSubsystem outtakeSubsystem){
-        this.outtakeSubsystem = outtakeSubsystem;
-    }
-
-    public DroneSubsystem getDroneSubsystem() {
-        return droneSubsystem;
-    }
-
-    public void setDroneSubsystem(DroneSubsystem droneSubsystem){
-        this.droneSubsystem = droneSubsystem;
+    public void setITDClawSubsystem(ITDClawSubsystem itdClawSubsystem){
+        this.itdClawSubsystem = itdClawSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {
