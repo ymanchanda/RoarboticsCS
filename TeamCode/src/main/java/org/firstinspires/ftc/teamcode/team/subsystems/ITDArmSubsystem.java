@@ -224,7 +224,7 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
 
     @Override
     public ITDArmStateMachine getStateMachine() {
-        return null;
+        return itdArmStateMachine;
     }
 
     @Override
