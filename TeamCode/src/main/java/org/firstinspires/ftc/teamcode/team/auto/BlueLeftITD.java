@@ -158,7 +158,13 @@ public class BlueLeftITD extends LinearOpMode {
                     break;
 
                 case LIFTUP:
-                    currentState = State.FORWARD;
+                    if(!drive.isBusy() && waitTimer.milliseconds() >= 750){
+                        drive.robot.getITDLiftSubsystem().extend(HIGHBASKET);
+                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.HOOK);
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        currentState = State.FORWARD;
+                        waitTimer.reset();
+                    }
                     break;
 
                 case FORWARD:
@@ -192,7 +198,7 @@ public class BlueLeftITD extends LinearOpMode {
 
 
                 case PARK:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
+                    currentState = State.IDLE;
                     break;
 
                 case IDLE:
@@ -203,7 +209,7 @@ public class BlueLeftITD extends LinearOpMode {
             drive.update();
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
-           // drive.getITDExpansionHubsLACH().update(getDt());
+            // drive.getITDExpansionHubsLACH().update(getDt());
             drive.robot.getITDLiftSubsystem().update(getDt());
             telemetry.update();
         }
