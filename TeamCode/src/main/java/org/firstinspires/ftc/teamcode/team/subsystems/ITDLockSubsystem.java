@@ -36,7 +36,7 @@ public class ITDLockSubsystem implements ISubsystem<ITDLockStateMachine, ITDLock
 
     @Override
     public String getName() {
-        return "Gripper Subsystem";
+        return "Lock Subsystem";
     }
 
     @Override

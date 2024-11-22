@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.team.subsystems.ITDLiftSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.ITDArmSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawArmSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDHangSubsystem;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDLockSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.RobotStateEstimator;
 
 
@@ -54,8 +56,13 @@ public class ITDAutoRobotLACH {
     private ITDExpansionHubsLACH itdExpansionHubsLACH;
     private ITDLiftSubsystem itdLiftSubsystem;
     private ITDArmSubsystem itdArmSubsystem;
+    private ITDHangSubsystem itdHangSubsystem;
     private ITDClawSubsystem itdClawSubsystem;
     private ITDClawArmSubsystem itdClawArmSubsystem;
+    private ITDLockSubsystem itdLockSubsystem;
+
+
+
     private RevMotor[] motors;
     private RevServo[] servos;
 
@@ -137,6 +144,13 @@ public class ITDAutoRobotLACH {
     public void setITDLiftSubsystem(ITDLiftSubsystem itdLiftSubsystem){
         this.itdLiftSubsystem = itdLiftSubsystem;
     }
+    public ITDHangSubsystem getITDHangSubsystem() {
+        return itdHangSubsystem;
+    }
+
+    public void setITDHangSubsystem(ITDHangSubsystem itdHangSubsystem){
+        this.itdHangSubsystem = itdHangSubsystem;
+    }
 
     public ITDClawArmSubsystem getITDClawArmSubsystem() {
         return itdClawArmSubsystem;
@@ -152,6 +166,18 @@ public class ITDAutoRobotLACH {
     public void setITDClawSubsystem(ITDClawSubsystem itdClawSubsystem){
         this.itdClawSubsystem = itdClawSubsystem;
     }
+
+    public ITDLockSubsystem getITDLockSubsystem() {
+        return itdLockSubsystem;
+    }
+
+    public void setITDLockSubsystem(ITDLockSubsystem itdLockSubsystem){
+        this.itdLockSubsystem = itdLockSubsystem;
+    }
+
+
+
+
 
     public TimeProfiler getMatchRuntime() {
         return matchRuntime;

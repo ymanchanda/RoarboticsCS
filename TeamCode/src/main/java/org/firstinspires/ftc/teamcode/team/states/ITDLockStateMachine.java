@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 public class ITDLockStateMachine  extends TimedState<ITDLockStateMachine.State>{
 
     public ITDLockStateMachine() {
-        super(ITDLockStateMachine.State.OPEN);
+        super(ITDLockStateMachine.State.UNLOCK);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ITDLockStateMachine  extends TimedState<ITDLockStateMachine.State>{
     }
 
     public enum State implements Namable {
-        OPEN("Open",0d), CLOSE("Close", 0.4d);
+        UNLOCK("Unlock",0d), LOCK("Lock", 0.4d);
 
         private final String name;
         private final double Position;

@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 
 public class ITDClawArmStateMachine extends TimedState<ITDClawArmStateMachine.State> {
     public ITDClawArmStateMachine() {
-        super(State.OPEN);
+        super(State.IDLE);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ITDClawArmStateMachine extends TimedState<ITDClawArmStateMachine.St
     }
 
     public enum State implements Namable {
-        OPEN("Open",0d), CLOSE("Close", 0.4d);
+        PICKUP("Open",1d), DROP("Close", 0.4d), IDLE("Close", 0d);
 
         private final String name;
         private final double Position;
