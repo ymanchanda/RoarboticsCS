@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.lib.geometry.Pose2d;
 import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubMotor;
 import org.firstinspires.ftc.teamcode.revextension2.ExpansionHubServo;
+import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
+import org.firstinspires.ftc.teamcode.team.subsystems.ITDClawSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.OuttakeSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.DroneSubsystem;
 import org.firstinspires.ftc.teamcode.team.subsystems.Drive;
@@ -42,9 +44,7 @@ public class CSAutoRobotLIO {
     private RobotStateEstimator robotStateEstimator;
     private Drive drive;
     private ITDLiftSubsystem liftSubsystem;
-    private OuttakeSubsystem outtakeSubsystem;
-    private DroneSubsystem droneSubsystem;
-    private IntakeSubsystem intakeSubsystem;
+    private ITDClawSubsystem ITDClawSubsystem;
     private RevMotor[] motors;
     private RevServo[] servos;
 
@@ -67,8 +67,7 @@ public class CSAutoRobotLIO {
 
         setLiftSubsystem(new ITDLiftSubsystem(getMotors()[0]));
         setIntakeSubsystem(new IntakeSubsystem(getMotors()[1]));
-        setOuttakeSubsystem(new OuttakeSubsystem(getServos()[0]));
-        setDroneSubsystem(new DroneSubsystem(getServos()[1]));
+        setDroneSubsystem(new ITDClawStateMachine(getServos()[1]));
         setMatchRuntime(new TimeProfiler(false));
     }
     public RevMotor[] getMotors() {
@@ -127,20 +126,13 @@ public class CSAutoRobotLIO {
         this.intakeSubsystem = intakeSubsystem;
     }
 
-    public OuttakeSubsystem getOuttakeSubsystem() {
-        return outtakeSubsystem;
+
+    public DroneSubsystem getITDClawStateMachine() {
+        return ITDClawSubsystem;
     }
 
-    public void setOuttakeSubsystem(OuttakeSubsystem outtakeSubsystem){
-        this.outtakeSubsystem = outtakeSubsystem;
-    }
-
-    public DroneSubsystem getDroneSubsystem() {
-        return droneSubsystem;
-    }
-
-    public void setDroneSubsystem(DroneSubsystem droneSubsystem){
-        this.droneSubsystem = droneSubsystem;
+    public void setDroneSubsystem(DroneSubsystem ITDClawSubsystem){
+        this.ITDClawSubsystem = ITDClawSubsystem;
     }
 
     public TimeProfiler getMatchRuntime() {

@@ -17,24 +17,12 @@ import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 
 
-@Autonomous(name = "Blue Left", group = "Pixel")
-public class BlueLeftITD extends LinearOpMode {
+@Autonomous(name = "Red Left", group = "Pixel")
+public class RedLeftITD extends LinearOpMode {
 
     CSBaseLIO drive;
     private static double dt;
     private static TimeProfiler updateRuntime;
-
-    static final Vector2d path1 = new Vector2d(-24 - (15.125/2),0); // blue left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path2 = new Vector2d(-24 - (15.125/2), 0); // blue right, not confirmed, maybe change y to a different location for space
-    static final Vector2d path3 = new Vector2d(24 + (15.125/2),0); // red right, not confirmed, maybe change y to a different location for space
-    static final Vector2d path4 = new Vector2d(24 + (15.125/2), 0); // red left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path5 = new Vector2d(50, 12);
-    static final Vector2d path6 = new Vector2d(34, 12);
-    static final Vector2d path7 = new Vector2d(12,12);
-
-    //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-    ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
 
     enum State {
         WAIT0,
@@ -52,17 +40,9 @@ public class BlueLeftITD extends LinearOpMode {
         GRAB
     }
 
-    org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
-    //State currentState = State.IDLE;
-
     private static final double width = 16.375;
     private static final double length = 15.125;
 
-    Pose2d startPoseRL = new Pose2d( 72 - (15.125/2), - 24 + (16.375/2)); // 72, -24 not confirmed
-    Pose2d startPoseRR = new Pose2d(72 - (15.125/2), 24 - (16.375/2)); //72, 24 not confirmed
-    Pose2d startPoseBR = new Pose2d(- 72 + (15.125/2), - 24 + (16.375/2)); //-72, -24 not confirmed
-    Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
-    //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
     private static final double LOWBASKET =  0d; //25.75 inches, 65.4 cm
@@ -72,15 +52,37 @@ public class BlueLeftITD extends LinearOpMode {
 
     int counter = 0;
 
+    Pose2d startPoseRL = new Pose2d( 72 - (15.125/2), - 24 + (16.375/2)); // 72, -24 not confirmed
+    static final Vector2d path1 = new Vector2d(48 - (15.125/2),-24); // blue left, not confirmed, maybe change y to a different location for space
+    static final Vector2d path2 = new Vector2d(48 - (15.125/2), 12); // blue right, not confirmed, maybe change y to a different location for space
+    static final Vector2d path3 = new Vector2d(24 + (15.125/2),-32); // red right, not confirmed, maybe change y to a different location for space
+    static final Vector2d path4 = new Vector2d(0 + (15.125/2), -32); // red left, not confirmed, maybe change y to a different location for space
+    //rotate 90 degrees right
+    static final Vector2d path5 = new Vector2d(0, -12);
+    //finished auto
+
+    //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+    ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+    org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.IDLE;
+    //State currentState = State.IDLE;
+
+
+
+
+    //lift test needs to be done (values are estimated/inaccurate)
+
+
+
     public void runOpMode() throws InterruptedException {
         setUpdateRuntime(new TimeProfiler(false));
 
         drive = new CSBaseLIO(hardwareMap);
-        drive.setPoseEstimate(startPoseBL);
+        drive.setPoseEstimate(startPoseRL);
         drive.robot.getLiftSubsystem().getStateMachine().updateState(ITDLiftStateMachine.State.IDLE);
         //drive.robot.getITDClawStateMachine().getStateMachine().updateState(ITDClawStateMachine.State.IDLE);
 
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseBL)
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRL)
                 .lineTo(path1)
                 .build();
 
@@ -100,14 +102,6 @@ public class BlueLeftITD extends LinearOpMode {
                 .lineTo(path5)
                 .build();
 
-        TrajectorySequence P5 = drive.trajectorySequenceBuilder(P4.end())
-                .lineTo(path6)
-                .build();
-
-        TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
-                .lineTo(path7)
-                .build();
-
         drive.getExpansionHubs().update(getDt());
         drive.robot.getLiftSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
@@ -125,7 +119,7 @@ public class BlueLeftITD extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.WAIT0;
+        currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.WAIT0;
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -138,39 +132,44 @@ public class BlueLeftITD extends LinearOpMode {
                     break;
 
                 case CLAWCLOSE:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.INITSTRAFE;
+                    if (waitTimer.milliseconds() >= 1000) {
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.CLOSE);
+
+                    }
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.INITSTRAFE;
                     break;
 
                 case INITSTRAFE:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.LIFTUP;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.LIFTUP;
+
                     break;
 
                 case LIFTUP:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.FORWARD;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.FORWARD;
                     break;
 
                 case FORWARD:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.PRELOAD;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.PRELOAD;
                     break;
 
                 case PRELOAD:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.MOVEARM;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.MOVEARM;
                     break;
 
                 case MOVEARM:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.CLAWOPEN;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.CLAWOPEN;
                     break;
 
                 case CLAWOPEN:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.MOVEARMBACK;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.MOVEARMBACK;
                     break;
 
                 case MOVEARMBACK:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.LIFTDOWN;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.LIFTDOWN;
                     break;
 
                 case LIFTDOWN:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.GRAB;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.GRAB;
                     break;
 
 
@@ -180,7 +179,7 @@ public class BlueLeftITD extends LinearOpMode {
 
 
                 case PARK:
-                    currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
+                    currentState = org.firstinspires.ftc.teamcode.team.auto.RedLeftITD.State.IDLE;
                     break;
 
                 case IDLE:
