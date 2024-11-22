@@ -193,8 +193,8 @@ public class BlueLeftITD extends LinearOpMode {
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
             drive.getExpansionHubs().update(getDt());
             drive.robot.getLiftSubsystem().update(getDt());
-            drive.robot.getOuttakeSubsystem().update(getDt());
-            drive.robot.getDroneSubsystem().update(getDt());
+            //drive.robot.getOuttakeSubsystem().update(getDt());
+            //drive.robot.getDroneSubsystem().update(getDt());
             telemetry.update();
         }
 
