@@ -71,7 +71,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
     boolean tf = false;
 
-    int counter = 0;
+    int count = 0;
 
     public void runOpMode() throws InterruptedException {
         setUpdateRuntime(new TimeProfiler(false));
@@ -117,8 +117,6 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
         double t1 = waitTimer.milliseconds();
 
         double t2 = waitTimer.milliseconds();
-
-        int count = 0;
 
         telemetry.addData("Initialize Time Seconds", (t2 - t1));
         telemetry.update();
