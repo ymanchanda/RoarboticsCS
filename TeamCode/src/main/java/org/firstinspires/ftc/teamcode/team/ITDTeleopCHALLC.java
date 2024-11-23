@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDLockStateMachine;
 
 
 /*
@@ -48,8 +47,8 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
     private double currentTime = 0; // keep track of current time
     private double speedMultiplier = 0.7;
     //these are based on LiftTest
-    private static final double Out = 5d;
-    private static final double In = 2.5d;
+    private static final double Out = -5d;
+    private static final double In = -2.5d;
     private static final double PickUp = 5d;
     private static final double Drop = 2.5d;
 
@@ -104,13 +103,6 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
             drive.robot.getITDArmSubsystem().retract();
         }
 
-        //Lock
-        if (getEnhancedGamepad1().isyJustPressed()) {
-            drive.robot.getITDLockSubsystem().getStateMachine().updateState(ITDLockStateMachine.State.LOCK);
-        }
-        if (getEnhancedGamepad1().isaJustPressed()) {
-            drive.robot.getITDLockSubsystem().getStateMachine().updateState(ITDLockStateMachine.State.UNLOCK);
-        }
 
 
 
@@ -155,7 +147,6 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
         telemetry.addData("Arm State: ", drive.robot.getITDArmSubsystem().getStateMachine().getState());
         telemetry.addData("Claw: ", drive.robot.getITDClawSubsystem().getStateMachine().getState());
         telemetry.addData("ClawArm: ", drive.robot.getITDClawArmSubsystem().getStateMachine().getState());
-        telemetry.addData("Lock: ,", drive.robot.getITDLockSubsystem().getStateMachine().getState());
 
 
         updateTelemetry(telemetry);

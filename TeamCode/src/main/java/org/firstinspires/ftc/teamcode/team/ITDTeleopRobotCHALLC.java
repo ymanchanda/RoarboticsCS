@@ -64,7 +64,6 @@ public abstract class ITDTeleopRobotCHALLC extends Robot {
         drive.robot.getITDLiftSubsystem().update(getDt());
         drive.robot.getITDClawSubsystem().update(getDt());
         drive.robot.getITDClawArmSubsystem().update(getDt());
-        drive.robot.getITDLockSubsystem().stop();
     }
 
     @Override
@@ -75,7 +74,6 @@ public abstract class ITDTeleopRobotCHALLC extends Robot {
         drive.robot.getITDLiftSubsystem().stop();
         drive.robot.getITDClawSubsystem().stop();
         drive.robot.getITDClawArmSubsystem().stop();
-        drive.robot.getITDLockSubsystem().stop();
     }
 
     public TimeProfiler getMatchRuntime() {

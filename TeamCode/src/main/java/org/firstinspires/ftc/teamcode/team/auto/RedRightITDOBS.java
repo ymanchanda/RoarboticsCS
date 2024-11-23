@@ -10,15 +10,13 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
-
-
-import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 
 
-@Autonomous(name = "Blue Left Obs", group = "Pixel")
-public class BlueLeftITDOBS extends LinearOpMode { //updated
+@Autonomous(name = "Red Right Obs", group = "Pixel")
+public class RedRightITDOBS extends LinearOpMode { //updated
 
 
     ITDBaseLACH drive;
@@ -31,8 +29,8 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
     private static final double hook2 = 4.7d;
 
 
-    static final Vector2d path0 = new Vector2d(-36 ,0); // blue left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
+    static final Vector2d path0 = new Vector2d(36 ,0); // blue left, not confirmed, maybe change y to a different location for space
+    static final Vector2d path1 = new Vector2d(48 + (length/2), -48 - (width/2));
     static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
 
 
@@ -59,7 +57,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
         PARK,
     }
 
-    org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.IDLE;
+    State currentState = State.IDLE;
 
     Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
     //lift test needs to be done (values are estimated/inaccurate)
@@ -125,7 +123,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
         if (isStopRequested()) return;
 
-        currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.WAIT0;
+        currentState = State.WAIT0;
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -134,7 +132,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
             switch (currentState) {
 
                 case WAIT0:
-                    if (waitTimer.milliseconds() >= 7000)
+                    if (waitTimer.milliseconds() >= 200)
                         currentState = State.PARK;
                     waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
@@ -267,6 +265,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
                 case PARK://parks in observation zone
                     drive.followTrajectorySequenceAsync(P2);
+                    //something
                     currentState = State.IDLE;
                     break;
 
@@ -278,7 +277,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
             drive.update();
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
-           // drive.getITDExpansionHubsLACH().update(getDt());
+            // drive.getITDExpansionHubsLACH().update(getDt());
             drive.robot.getITDLiftSubsystem().update(getDt());
             telemetry.update();
         }
