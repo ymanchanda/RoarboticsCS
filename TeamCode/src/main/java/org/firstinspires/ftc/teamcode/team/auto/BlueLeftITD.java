@@ -13,10 +13,8 @@ import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.Trajector
 
 
 import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
-import org.firstinspires.ftc.teamcode.team.subsystems.ITDExpansionHubsLACH;
 
 
 @Autonomous(name = "Blue Left", group = "Pixel")
@@ -28,14 +26,13 @@ public class BlueLeftITD extends LinearOpMode {
 
     private static final double width = 16.375;
     private static final double length = 15.125;
+    private static final double hook = 5d;
+    private static final double hook2 = 4.7d;
+
 
     static final Vector2d path0 = new Vector2d(-36 ,0); // blue left, not confirmed, maybe change y to a different location for space
-    //static final Vector2d path1 = new Vector2d(-24 - (15.125/2), 0); // blue right, not confirmed, maybe change y to a different location for space
-    // static final Vector2d path2 = new Vector2d(24 + (15.125/2),0); // red right, not confirmed, maybe change y to a different location for space
-  //  static final Vector2d path3 = new Vector2d(24 + (15.125/2), 0); // red left, not confirmed, maybe change y to a different location for space
-  //  static final Vector2d path1 = new Vector2d(-48 -(length/2), 48 - (width/2));
-    static final Vector2d path1 = new Vector2d(34, 12);
-    static final Vector2d path2 = new Vector2d(12,12);
+    static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
+    static final Vector2d path2 = new Vector2d(-24,0);//level ascent
     static final Vector2d path3 = new Vector2d(-72 + (width/2),-52); //observation zone
 
 
@@ -48,7 +45,11 @@ public class BlueLeftITD extends LinearOpMode {
         CLAWCLOSE,
         INITSTRAFE,
         LIFTUP,
-        PICKUP,
+        DEPOSIT,
+        SAMPLES,
+        TURNS,
+        PICKUPARM,
+        PICKUPCLAW,
         EXTENSION,
         MOVEARM,
         CLAWOPEN,
@@ -56,14 +57,10 @@ public class BlueLeftITD extends LinearOpMode {
         LIFTDOWN,
         IDLE,
         PARK,
-        GRAB
     }
 
     org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
 
-    Pose2d startPoseRL = new Pose2d( 72 - (15.125/2), - 24 + (16.375/2)); // 72, -24 not confirmed
-    Pose2d startPoseRR = new Pose2d(72 - (15.125/2), 24 - (16.375/2)); //72, 24 not confirmed
-    Pose2d startPoseBR = new Pose2d(- 72 + (15.125/2), - 24 + (16.375/2)); //-72, -24 not confirmed
     Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
@@ -120,6 +117,8 @@ public class BlueLeftITD extends LinearOpMode {
 
         double t2 = waitTimer.milliseconds();
 
+        int count = 0;
+
         telemetry.addData("Initialize Time Seconds", (t2 - t1));
         telemetry.update();
 
@@ -137,21 +136,21 @@ public class BlueLeftITD extends LinearOpMode {
             switch (currentState) {
 
                 case WAIT0:
-                    if (waitTimer.milliseconds() >= 1000)
+                    if (waitTimer.milliseconds() >= 500)
                         currentState = State.CLAWCLOSE;
                     waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
                     break;
 
-                case CLAWCLOSE:
-                    if(waitTimer.milliseconds() >= 1000){
+                case CLAWCLOSE://ensures claw is closed with preloaded specimen
+                    if(waitTimer.milliseconds() >= 500){
                         drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
                         currentState = State.INITSTRAFE;
                         waitTimer.reset();
                     }
                     break;
 
-                case INITSTRAFE:
+                case INITSTRAFE: //goes to submerisble
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P0);
                         currentState = State.LIFTUP;
@@ -159,70 +158,122 @@ public class BlueLeftITD extends LinearOpMode {
                     }
                     break;
 
-                case LIFTUP: //deposits on high bar
+                case LIFTUP: //goes to high bar
                     drive.robot.getITDLiftSubsystem().extend(HIGHBASKET);
-                    if(!drive.isBusy() && waitTimer.milliseconds() >= 750){
-                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.HOOK);
-                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
-                        currentState = State.PICKUP;
+                    if(!drive.isBusy() && waitTimer.milliseconds() >= 500){
+                        drive.robot.getITDClawArmSubsystem().update(hook); //hook
+                        currentState = State.DEPOSIT;
                         waitTimer.reset();
                     }
                     break;
 
-                case PICKUP://pickup sample
+                case DEPOSIT://deposits sample on to high bar
+                    if(!drive.isBusy() && waitTimer.milliseconds() >= 750) {
+                        drive.robot.getITDClawArmSubsystem().update(hook2); //hook
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        currentState = State.SAMPLES;
+                        waitTimer.reset();
+                    }
+                    break;
+
+                case SAMPLES: //goes to set position to pick up all samples
                     if(!drive.isBusy()) {
                         drive.followTrajectorySequenceAsync(P1);
-                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
-                        drive.robot.getITDArmSubsystem().setDesiredSetpoint(.2d); //change to the actual value
-                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.PICKUP);
-                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
-                        currentState = State.EXTENSION;
-                        waitTimer.reset();
+                        currentState = State.TURNS;
                     }
                     break;
 
-                case EXTENSION:
+
+                case TURNS://turn to sample 1, 2, & 3 (depends on count) and open claw
+                    if(!drive.isBusy()) {
+                        count++;
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        if(count == 1)
+                            drive.turn(Math.toRadians(-25));//edit once we test
+                        if (count == 2)
+                            drive.turn(Math.toRadians(25));
+                        if (count == 3)
+                            drive.turn(Math.toRadians(25));
+                        if(count<=3) {
+                            currentState = State.PICKUPARM;
+                            waitTimer.reset();
+                        }
+                    }
+                    break;
+
+                case PICKUPARM: //moves arm to position for pick up and reopens claw
+                    if(!drive.isBusy()) {
+                        drive.robot.getITDArmSubsystem().setDesiredSetpoint(.2d);//change to the actual value
+                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.PICKUP);
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        if (count <= 3) {
+                            currentState = State.PICKUPCLAW;
+                            waitTimer.reset();
+                        }
+                    }
+                    break;
+
+                case PICKUPCLAW: // moves claw to position to close on sample and pickup the sample
+                    if(!drive.isBusy()) {
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
+                        if (count <= 3) {
+                            currentState = State.EXTENSION;
+                            waitTimer.reset();
+                        }
+                    }
+                    break;
+
+                case EXTENSION: //extend lift to high basket
                     if(!drive.isBusy()) {
                         drive.robot.getITDArmSubsystem().setDesiredSetpoint(5d); //change to the actual value for it to go up and deposit (fully extended)
                         drive.robot.getITDLiftSubsystem().extend(5d);
+                        waitTimer.reset();
+
                     }
                     currentState = State.MOVEARM;
                     break;
 
-                case MOVEARM:
+                case MOVEARM: // move arm up
                     if(!drive.isBusy()) {
                         drive.robot.getITDClawArmSubsystem().update(1d);
                         currentState = State.CLAWOPEN;
+                        waitTimer.reset();
                     }
                     break;
 
-                case CLAWOPEN:
-                    if(!drive.isBusy()) {
+                case CLAWOPEN://drop off in basket
+                    if(!drive.isBusy() && waitTimer.milliseconds() >= 500) {
                         drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
                         currentState = State.MOVEARMBACK;
+                        waitTimer.reset();
                     }
                     break;
 
-                case MOVEARMBACK:
-                    currentState = State.LIFTDOWN;
+                case MOVEARMBACK: // closes claw & brings arm back to original position
+                    if(!drive.isBusy() && waitTimer.milliseconds() >= 500) {
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
+                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.DROP);//is drop correct
+                        currentState = State.LIFTDOWN;
+                        waitTimer.reset();
+                    }
                     break;
 
-                case LIFTDOWN:
-                    currentState = State.GRAB;
+                case LIFTDOWN:// bring lift back down to intial position
+                    if(!drive.isBusy() && count <= 3) {
+                        drive.robot.getITDLiftSubsystem().retract();//is this correct...
+                        currentState = State.PICKUPARM;
+                    }
+                    else if(!drive.isBusy() && count > 3)
+                        currentState = State.PARK;
                     break;
 
 
-                case GRAB:
-                    currentState = State.PARK;
-                    break;
-
-
-                case PARK:
-
+                case PARK://parks in observation zone
+                    drive.followTrajectorySequenceAsync(P3);
                     currentState = State.IDLE;
                     break;
 
-                case IDLE:
+                case IDLE://goes to idle
                     PoseStorage.currentPose = drive.getPoseEstimate();
                     break;
             }
@@ -254,11 +305,3 @@ public class BlueLeftITD extends LinearOpMode {
         dt = pdt;
     }
 }
-
-
-
-
-
-
-
-
