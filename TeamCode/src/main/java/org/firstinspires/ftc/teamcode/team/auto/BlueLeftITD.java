@@ -26,13 +26,18 @@ public class BlueLeftITD extends LinearOpMode {
     private static double dt;
     private static TimeProfiler updateRuntime;
 
-    static final Vector2d path0 = new Vector2d(-24 - (15.125/2),0); // blue left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path1 = new Vector2d(-24 - (15.125/2), 0); // blue right, not confirmed, maybe change y to a different location for space
-    static final Vector2d path2 = new Vector2d(24 + (15.125/2),0); // red right, not confirmed, maybe change y to a different location for space
-    static final Vector2d path3 = new Vector2d(24 + (15.125/2), 0); // red left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path4 = new Vector2d(50, 12);
-    static final Vector2d path5 = new Vector2d(34, 12);
-    static final Vector2d path6 = new Vector2d(12,12);
+    private static final double width = 16.375;
+    private static final double length = 15.125;
+
+    static final Vector2d path0 = new Vector2d(-36 ,0); // blue left, not confirmed, maybe change y to a different location for space
+    //static final Vector2d path1 = new Vector2d(-24 - (15.125/2), 0); // blue right, not confirmed, maybe change y to a different location for space
+    // static final Vector2d path2 = new Vector2d(24 + (15.125/2),0); // red right, not confirmed, maybe change y to a different location for space
+  //  static final Vector2d path3 = new Vector2d(24 + (15.125/2), 0); // red left, not confirmed, maybe change y to a different location for space
+  //  static final Vector2d path1 = new Vector2d(-48 -(length/2), 48 - (width/2));
+    static final Vector2d path1 = new Vector2d(34, 12);
+    static final Vector2d path2 = new Vector2d(12,12);
+    static final Vector2d path3 = new Vector2d(-72 + (width/2),-52); //observation zone
+
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     ElapsedTime waitTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -43,8 +48,8 @@ public class BlueLeftITD extends LinearOpMode {
         CLAWCLOSE,
         INITSTRAFE,
         LIFTUP,
-        FORWARD,
-        PRELOAD,
+        PICKUP,
+        EXTENSION,
         MOVEARM,
         CLAWOPEN,
         MOVEARMBACK,
@@ -55,9 +60,6 @@ public class BlueLeftITD extends LinearOpMode {
     }
 
     org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
-
-    private static final double width = 16.375;
-    private static final double length = 15.125;
 
     Pose2d startPoseRL = new Pose2d( 72 - (15.125/2), - 24 + (16.375/2)); // 72, -24 not confirmed
     Pose2d startPoseRR = new Pose2d(72 - (15.125/2), 24 - (16.375/2)); //72, 24 not confirmed
@@ -96,7 +98,7 @@ public class BlueLeftITD extends LinearOpMode {
         TrajectorySequence P3 = drive.trajectorySequenceBuilder(P2.end())
                 .lineTo(path3)
                 .build();
-
+/*
         TrajectorySequence P4 = drive.trajectorySequenceBuilder(P3.end())
                 .lineTo(path4)
                 .build();
@@ -108,7 +110,7 @@ public class BlueLeftITD extends LinearOpMode {
         TrajectorySequence P6 = drive.trajectorySequenceBuilder(P5.end())
                 .lineTo(path6)
                 .build();
-
+        */
         //drive.getITDExpansionHubsLACH().update(getDt());
         drive.robot.getITDLiftSubsystem().update(getDt());
         //drive.robot.getITDClawStateMachine().update(getDt());
@@ -157,30 +159,48 @@ public class BlueLeftITD extends LinearOpMode {
                     }
                     break;
 
-                case LIFTUP:
+                case LIFTUP: //deposits on high bar
+                    drive.robot.getITDLiftSubsystem().extend(HIGHBASKET);
                     if(!drive.isBusy() && waitTimer.milliseconds() >= 750){
-                        drive.robot.getITDLiftSubsystem().extend(HIGHBASKET);
                         drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.HOOK);
                         drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
-                        currentState = State.FORWARD;
+                        currentState = State.PICKUP;
                         waitTimer.reset();
                     }
                     break;
 
-                case FORWARD:
-                    currentState = State.PRELOAD;
+                case PICKUP://pickup sample
+                    if(!drive.isBusy()) {
+                        drive.followTrajectorySequenceAsync(P1);
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        drive.robot.getITDArmSubsystem().setDesiredSetpoint(.2d); //change to the actual value
+                        drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.PICKUP);
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
+                        currentState = State.EXTENSION;
+                        waitTimer.reset();
+                    }
                     break;
 
-                case PRELOAD:
+                case EXTENSION:
+                    if(!drive.isBusy()) {
+                        drive.robot.getITDArmSubsystem().setDesiredSetpoint(5d); //change to the actual value for it to go up and deposit (fully extended)
+                        drive.robot.getITDLiftSubsystem().extend(5d);
+                    }
                     currentState = State.MOVEARM;
                     break;
 
                 case MOVEARM:
-                    currentState = State.CLAWOPEN;
+                    if(!drive.isBusy()) {
+                        drive.robot.getITDClawArmSubsystem().update(1d);
+                        currentState = State.CLAWOPEN;
+                    }
                     break;
 
                 case CLAWOPEN:
-                    currentState = State.MOVEARMBACK;
+                    if(!drive.isBusy()) {
+                        drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+                        currentState = State.MOVEARMBACK;
+                    }
                     break;
 
                 case MOVEARMBACK:
@@ -198,6 +218,7 @@ public class BlueLeftITD extends LinearOpMode {
 
 
                 case PARK:
+
                     currentState = State.IDLE;
                     break;
 
@@ -209,7 +230,7 @@ public class BlueLeftITD extends LinearOpMode {
             drive.update();
 
             //The following code ensure state machine updates i.e. parallel execution with drivetrain
-            // drive.getITDExpansionHubsLACH().update(getDt());
+           // drive.getITDExpansionHubsLACH().update(getDt());
             drive.robot.getITDLiftSubsystem().update(getDt());
             telemetry.update();
         }
