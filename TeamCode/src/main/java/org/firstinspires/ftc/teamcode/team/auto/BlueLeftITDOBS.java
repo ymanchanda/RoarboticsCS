@@ -17,8 +17,9 @@ import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 
 
-@Autonomous(name = "Blue Left", group = "Pixel")
-public class BlueLeftITD extends LinearOpMode {
+@Autonomous(name = "Blue Left Obs", group = "Pixel")
+public class BlueLeftITDOBS extends LinearOpMode { //updated
+
 
     ITDBaseLACH drive;
     private static double dt;
@@ -59,7 +60,7 @@ public class BlueLeftITD extends LinearOpMode {
         PARK,
     }
 
-    org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.IDLE;
+    org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.IDLE;
 
     Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
     //lift test needs to be done (values are estimated/inaccurate)
@@ -127,7 +128,7 @@ public class BlueLeftITD extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITD.State.WAIT0;
+        currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.WAIT0;
 
         while (opModeIsActive() && !isStopRequested()) {
 
