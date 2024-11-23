@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.team.auto.ITDBaseLACH;
 import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDHangStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDLockStateMachine;
@@ -113,16 +112,6 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
             drive.robot.getITDLockSubsystem().getStateMachine().updateState(ITDLockStateMachine.State.UNLOCK);
         }
 
-        //Hang
-        if (getEnhancedGamepad1().isDpadUpJustPressed()) {
-            drive.robot.getITDHangSubsystem().getStateMachine().updateState(ITDHangStateMachine.State.UP);
-        }
-        if (getEnhancedGamepad1().isDpadUpJustPressed()) {
-            drive.robot.getITDHangSubsystem().getStateMachine().updateState(ITDHangStateMachine.State.DOWN);
-        }
-        if (getEnhancedGamepad1().isDpadRightJustPressed()) {
-            drive.robot.getITDHangSubsystem().getStateMachine().updateState(ITDHangStateMachine.State.IDLE);
-        }
 
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -164,7 +153,6 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
 
         telemetry.addData("Lift State: ", drive.robot.getITDLiftSubsystem().getStateMachine().getState());
         telemetry.addData("Arm State: ", drive.robot.getITDArmSubsystem().getStateMachine().getState());
-        telemetry.addData("Hang State: ", drive.robot.getITDHangSubsystem().getStateMachine().getState());
         telemetry.addData("Claw: ", drive.robot.getITDClawSubsystem().getStateMachine().getState());
         telemetry.addData("ClawArm: ", drive.robot.getITDClawArmSubsystem().getStateMachine().getState());
         telemetry.addData("Lock: ,", drive.robot.getITDLockSubsystem().getStateMachine().getState());

@@ -62,7 +62,6 @@ public abstract class ITDTeleopRobotCHALLC extends Robot {
         drive.update();
         drive.robot.getITDArmSubsystem().update(getDt());
         drive.robot.getITDLiftSubsystem().update(getDt());
-        drive.robot.getITDHangSubsystem().update(getDt());
         drive.robot.getITDClawSubsystem().update(getDt());
         drive.robot.getITDClawArmSubsystem().update(getDt());
         drive.robot.getITDLockSubsystem().stop();
@@ -74,7 +73,6 @@ public abstract class ITDTeleopRobotCHALLC extends Robot {
         drive.getExpansionHubs().stop();
         drive.robot.getITDArmSubsystem().stop();
         drive.robot.getITDLiftSubsystem().stop();
-        drive.robot.getITDHangSubsystem().stop();
         drive.robot.getITDClawSubsystem().stop();
         drive.robot.getITDClawArmSubsystem().stop();
         drive.robot.getITDLockSubsystem().stop();
