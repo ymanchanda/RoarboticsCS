@@ -20,7 +20,7 @@ public class ITDClawStateMachine extends TimedState<ITDClawStateMachine.State> {
     }
 
     public enum State implements Namable {
-        OPEN("Open",0d), CLOSE("Close", 0.4d);
+        OPEN("Open",0.25d), CLOSE("Close", -0.1d);
 
         private final String name;
         private final double Position;

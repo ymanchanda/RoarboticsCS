@@ -156,10 +156,10 @@ public class ITDBaseLACH extends MecanumDrive {
                 hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2"))
         );
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "LF");
-        leftRear = hardwareMap.get(DcMotorEx.class, "LR");
-        rightRear = hardwareMap.get(DcMotorEx.class, "RR");
-        rightFront = hardwareMap.get(DcMotorEx.class, "RF");
+        leftFront = hardwareMap.get(DcMotorEx.class, "lf");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lr");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rr");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 

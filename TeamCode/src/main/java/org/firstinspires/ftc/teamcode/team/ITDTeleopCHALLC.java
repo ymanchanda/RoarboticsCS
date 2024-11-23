@@ -20,24 +20,27 @@ import org.firstinspires.ftc.teamcode.team.states.ITDLockStateMachine;
  * The controls for this robot are:
  *  User 1:
  *      Drive:
- *          Left & Right joysticks     -> Mecanum drive
- *          Left-Bumper               -> Decrease robot speed .7x
- *          Right-Bumper              -> Normal robot speed 1x
+ *          Left & Right joysticks      -> Mecanum drive
+ *          Left-Bumper                 -> Decrease robot speed .7x
+ *          Right-Bumper                -> Normal robot speed 1x
  *      Lift:
- *
+ *          Y-Button                    -> Extend lift to "Out" position
+ *          B-Button                    -> Extend lift to "In" position
+ *          A-Button                    -> Retract lift to starting position
  *      Arm:
- *          B-Button (pressed)         -> Up
- *          X-Button (pressed)         -> Down
+ *          Left_trigger                -> Turn arm to "PickUp" position
+ *          Right_trigger               -> Turn arm to "Drop" position
+ *          B-Button (pressed)          -> Turn arm to Starting position
  *
  *  User 2:
  *      Claw:
- *          Left-trigger               ->
- *          Right-trigger              ->
- *          A-button (pressed)         ->
- *          Y-button (pressed)         ->
+ *          Left-trigger                ->
+ *          Right-trigger               ->
+ *          A-button (pressed)          ->
+ *          Y-button (pressed)          ->
  *      ClawArm:
- *          Dpad-up                 ->
- *          Dpad-down                 ->
+ *          Dpad-up                     ->
+ *          Dpad-down                   ->
  *
  */
 @TeleOp(name = "ITD TeleOp CHALLC", group = "Main")
@@ -50,6 +53,10 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
     private static final double In = 2.5d;
     private static final double PickUp = 5d;
     private static final double Drop = 2.5d;
+
+
+
+
 
     private Pose2d poseEstimate;
 
