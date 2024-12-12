@@ -5,16 +5,15 @@ import org.firstinspires.ftc.teamcode.lib.annotations.PIDSVA;
 import org.firstinspires.ftc.teamcode.lib.control.ControlConstants;
 import org.firstinspires.ftc.teamcode.lib.drivers.RevMotor;
 import org.firstinspires.ftc.teamcode.lib.motion.IMotionProfile;
-import org.firstinspires.ftc.teamcode.lib.motion.ResidualVibrationReductionMotionProfilerGenerator;
 import org.firstinspires.ftc.teamcode.team.DbgLog;
 import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
 
 @PIDSVA(name = "Extend",
         P = 0.4d,
         I = 0d,
-        D = 0d,
-        S = 0.10d,
-        V = (1 - 0.10d) / 15d,
+        D = 0.00d,
+        S = 0.05d,
+        V = (1 - 0.05) / 15d,
         A = 0d
 )
 
@@ -22,18 +21,17 @@ import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
         P = 0.08d,
         I = 0d,
         D = 0d,
-        S = 0.06d,
+        S = 0.05d,
         V = 1 / 55d,
         A = 0d
 )
-
-public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmStateMachine.State>{
-
+public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmStateMachine.State> {
     private static final ControlConstants EXTEND_CONTROL_CONSTANTS;
     private static final ControlConstants RETRACT_CONTROL_CONSTANTS;
+
     private static ITDArmStateMachine itdArmStateMachine;
-    private RevMotor leftArm;
-    private RevMotor rightArm;
+    private RevMotor lift;
+
     private static IMotionProfile extensionProfile = null;
     private static double setpoint = 0d;
     private static double desiredSetpoint = 0d;
@@ -41,8 +39,8 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
     private double runningSum;
 
     static {
-        new Thread(ResidualVibrationReductionMotionProfilerGenerator::init).start();
-        PIDSVA[] controllers = Feeder.class.getAnnotationsByType(PIDSVA.class);
+        //new Thread(ResidualVibrationReductionMotionProfilerGenerator::init).start();
+        PIDSVA[] controllers = ITDLiftSubsystem.class.getAnnotationsByType(PIDSVA.class);
         if(controllers.length == 2) {
             PIDSVA extendController;
             PIDSVA retractController;
@@ -67,20 +65,11 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
             EXTEND_CONTROL_CONSTANTS  = new ControlConstants();
             RETRACT_CONTROL_CONSTANTS = new ControlConstants();
         }
-
-        ITDArmStateMachine.setRunExtension((setpoint) -> {
-            if(getExtensionProfile() != null) {
-                getExtensionProfile().start();
-                ITDArmSubsystem.setpoint = setpoint;
-            }
-        });
     }
 
-
-    public ITDArmSubsystem(RevMotor leftArm, RevMotor rightArm) {
-        setITDArmStateMachine(new ITDArmStateMachine(this));
-        setLeftArm(leftArm);
-        setRightArm(rightArm);
+    public ITDArmSubsystem(RevMotor lift) {
+        setArmStateMachine(new ITDArmStateMachine(this));
+        setLift(lift);
         setLastError(0d);
         resetRunningSum();
     }
@@ -90,14 +79,43 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
     }
 
     @Override
-    public String getName() {
-        return "ITDArmSubsystem";
+    public ITDArmStateMachine getStateMachine() {
+        return itdArmStateMachine;
     }
 
-    public void update(double dt) {
-        getITDArmStateMachine().update(dt);
+    @Override
+    public ITDArmStateMachine.State getState() {
+        return getStateMachine().getState();
+    }
 
-        double error                = getSetpoint() - getLeftArm().getPosition(); //error in how high the lift goes
+    @Override
+    public void start() {
+    }
+
+    @Override
+    public void stop() {
+        getLift().setPower(0d);
+        getLift().resetEncoder();
+        setSetpoint(0d);
+        setDesiredSetpoint(0d);
+    }
+
+    @Override
+    public String getName() {
+        return "Arm";
+    }
+
+    @Override
+    public void writeToTelemetry(Telemetry telemetry) {
+
+    }
+
+    @Override
+    public void update(double dt) {
+        //getStateMachine().update(dt);
+        getArmStateMachine().update(dt);
+
+        double error                = getSetpoint() - getLift().getPosition();
         double setpointVelocity     = 0d;
         double setpointAcceleration = 0d;
         if(getExtensionProfile() != null && !getExtensionProfile().isDone()) {
@@ -105,23 +123,28 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
             setpointAcceleration = getExtensionProfile().getAcceleration();
         }
 
+        DbgLog.msg("Error: " + String.valueOf(error));
+
         setRunningSum(getRunningSum() + error * dt);
         double output;
-        if(getITDArmStateMachine().getState().equals(ITDArmStateMachine.State.EXTEND)) {
+        if(getArmStateMachine().getState().equals(ITDArmStateMachine.State.EXTEND)) { //changed from getstate to getdesiredstate
             output = getExtendControlConstants().getOutput(dt, error, getLastError(), getRunningSum(), setpointVelocity, setpointAcceleration, false);
             output += getExtendControlConstants().kS();
-
-        } else {
+        }
+        else {
             output = getRetractControlConstants().getOutput(dt, error, getLastError(), getRunningSum(), setpointVelocity, setpointAcceleration, true);
+        }
 
-                }
+        DbgLog.msg("Output: " + String.valueOf(output));
+
         setLastError(error);
+        getLift().setPower(output);
 
-        final double kP = 0.001d;
-        double relativeError = getLeftArm().getPosition() - getRightArm().getPosition();
-        double relativeOutput = kP * relativeError;
-        getLeftArm().setPower(output);
-        getRightArm().setPower(output + relativeOutput);
+    }
+
+    public void extend(Double set) {
+        resetRunningSum();
+        setSetpoint(set);
     }
 
     public void retract() {
@@ -131,27 +154,24 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
     }
 
     public boolean closeToSetpoint(double threshold) {
-        return Math.abs(getSetpoint() - getLeftArm().getPosition()) <= threshold;
+        return Math.abs(getSetpoint() - getLift().getPosition()) <= threshold;
     }
 
-    public static ITDArmStateMachine getITDArmStateMachine() {
+    public static ITDArmStateMachine getArmStateMachine() {
         return itdArmStateMachine;
     }
 
-    public static void setITDArmStateMachine(ITDArmStateMachine itdArmStateMachine) {
-        ITDArmSubsystem.itdArmStateMachine = itdArmStateMachine;
+    public static void setArmStateMachine(ITDArmStateMachine liftSM) {
+        ITDArmSubsystem.itdArmStateMachine = liftSM;
     }
 
-    public RevMotor getLeftArm() {return leftArm;}
-    public void setLeftArm(RevMotor leftArm) {
-        this.leftArm = leftArm;
+    public RevMotor getLift() {
+        return lift;
     }
 
-    public RevMotor getRightArm() {
-        return rightArm;
+    public void setLift(RevMotor lift) {
+        this.lift = lift;
     }
-
-    public void setRightArm(RevMotor rightArm) {this.rightArm = rightArm;}
 
     public static double getSetpoint() {
         return setpoint;
@@ -162,22 +182,16 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
         if(setpoint != getSetpoint() && (getExtensionProfile() == null || getExtensionProfile().isDone())) {
             if(setpoint != 0d) {
                 //Extending
-                getITDArmStateMachine().updateState(ITDArmStateMachine.State.EXTEND);
+                getArmStateMachine().updateState(ITDArmStateMachine.State.EXTEND);
                 this.setpoint = setpoint;
             } else {
                 //Retracting
-                getITDArmStateMachine().updateState(ITDArmStateMachine.State.RETRACT);
-                setExtensionProfile(new ResidualVibrationReductionMotionProfilerGenerator(
-                        getLeftArm().getPosition(), -getLeftArm().getPosition(), 25d, 50d
-                ));
+                getArmStateMachine().updateState(ITDArmStateMachine.State.RETRACT);
                 this.setpoint = setpoint;
+                //setExtensionProfile(new ResidualVibrationReductionMotionProfilerGenerator(
+                //        getLift().getPosition(), -getLift().getPosition(), 25d, 50d
+                //));
             }
-        }
-        if(getExtensionProfile() == null){
-            DbgLog.msg("EXTENSION PROFILE NULL");
-        } //Debugging purposes 12/20
-        else {
-            DbgLog.msg("EXTENSION PROFILE");
         }
     }
 
@@ -185,12 +199,12 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
         return extensionProfile;
     }
 
-    public static ControlConstants getExtendControlConstants() {
-        return EXTEND_CONTROL_CONSTANTS;
-    }
-
     public static void setExtensionProfile(IMotionProfile extensionProfile) {
         ITDArmSubsystem.extensionProfile = extensionProfile;
+    }
+
+    public static ControlConstants getExtendControlConstants() {
+        return EXTEND_CONTROL_CONSTANTS;
     }
 
     public static ControlConstants getRetractControlConstants() {
@@ -219,31 +233,5 @@ public class ITDArmSubsystem implements ISubsystem<ITDArmStateMachine, ITDArmSta
 
     public static void setDesiredSetpoint(double desiredSetpoint) {
         ITDArmSubsystem.desiredSetpoint = desiredSetpoint;
-    }
-
-
-    @Override
-    public ITDArmStateMachine getStateMachine() {
-        return itdArmStateMachine;
-    }
-
-    @Override
-    public ITDArmStateMachine.State getState() {
-        return null;
-    }
-
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void writeToTelemetry(Telemetry telemetry) {
-
     }
 }

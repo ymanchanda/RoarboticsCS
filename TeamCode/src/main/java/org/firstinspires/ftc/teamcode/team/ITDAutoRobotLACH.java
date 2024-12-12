@@ -73,8 +73,7 @@ public class ITDAutoRobotLACH {
 
         setMotors(new RevMotor[] {
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, true, false, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm Right")), true, true, true, false, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093),
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm Left")), true, true, true, false, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093)
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm")), true, true, true, true, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093),
         });
 
         setServos(new RevServo[] {
@@ -83,7 +82,7 @@ public class ITDAutoRobotLACH {
         });
 
         setITDLiftSubsystem(new ITDLiftSubsystem(getMotors()[0]));
-        setITDArmSubsystem(new ITDArmSubsystem(getMotors()[1], getMotors()[2]));
+        setITDArmSubsystem(new ITDArmSubsystem(getMotors()[1]));
         setITDClawSubsystem(new ITDClawSubsystem(getServos()[0]));
         setITDClawArmSubsystem(new ITDClawArmSubsystem(getServos()[1]));
         setMatchRuntime(new TimeProfiler(false));

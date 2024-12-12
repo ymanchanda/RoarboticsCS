@@ -6,26 +6,32 @@ import org.firstinspires.ftc.teamcode.team.subsystems.ITDArmSubsystem;
 
 import java.util.function.DoubleConsumer;
 
+//The following commented lines are from ElevatorStateMachine before deleting
+//For lift stop calculations the POLE Heights from the Floor
+//  High = 33.75 inches,
+//  Mid = 23.75 inches,
+//  Low = 13.75 inches
+
 public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
     private static DoubleConsumer runExtension;
     private ITDArmSubsystem itdArmSubsystem;
-    private ITDArmStateMachine.State state;
-    private ITDArmStateMachine.State desiredState;
+    private State state;
+    private State desiredState;
 
     public ITDArmStateMachine(ITDArmSubsystem itdArmSubsystem) {
-        setITDArmSubsystem(itdArmSubsystem);
+        setItdLiftSubsystem(itdArmSubsystem);
         setState(State.IDLE);
         setDesiredState(State.IDLE);
     }
 
     @Override
-    public void updateState(ITDArmStateMachine.State state) {
+    public void updateState(State state) {
         setDesiredState(state);
     }
 
     @Override
     public boolean hasReachedStateGoal() {
-        return getITDArmSubsystem().closeToSetpoint(1 / 4d) && ITDArmSubsystem.getExtensionProfile().isDone();
+        return getItdArmSubsystem().closeToSetpoint(1 / 4d) && ITDArmSubsystem.getExtensionProfile().isDone();
     }
 
     @Override
@@ -50,7 +56,7 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
 
     @Override
     public String getName() {
-        return "ITD Arm State Machine";
+        return "ITDArm State Machine";
     }
 
     @Override
@@ -59,8 +65,8 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
     }
 
     @Override
-    public void update(double dt) {
-        if(attemptingStateChange()) {
+    public void update(double dt) { //new change
+        if (attemptingStateChange()) {
             setState(getDesiredState());
             if (getRunExtension() != null) {
                 getRunExtension().accept(ITDArmSubsystem.getDesiredSetpoint());
@@ -68,14 +74,12 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
         }
     }
 
-    private void setState(State state) {
-        this.state = state;
-    }
+    private void setState(State state) {this.state = state;}
 
     private void setDesiredState(State desiredState) {this.desiredState = desiredState;}
 
     public enum State implements Namable {
-        IDLE("Idle"), EXTEND("Extend"), RETRACT("Retract");
+        IDLE("Idle"), EXTEND("Up"), RETRACT("Down");
 
         private final String name;
 
@@ -89,18 +93,15 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
         }
     }
 
-    public ITDArmSubsystem getITDArmSubsystem() {
+    public ITDArmSubsystem getItdArmSubsystem() {
         return itdArmSubsystem;
     }
 
-    public void setITDArmSubsystem(ITDArmSubsystem itdArmSubsystem) {this.itdArmSubsystem = itdArmSubsystem;}
+    public void setItdLiftSubsystem(ITDArmSubsystem itdArmSubsystem) {this.itdArmSubsystem = itdArmSubsystem;}
 
-    public static DoubleConsumer getRunExtension() {
-        return runExtension;
-    }
+    public static DoubleConsumer getRunExtension() {return runExtension;}
 
     public static void setRunExtension(DoubleConsumer runExtension) {
         ITDArmStateMachine.runExtension = runExtension;
     }
 }
-

@@ -14,8 +14,7 @@ import java.util.Arrays;
  *         Front Right Wheel    -> RF
  *         Back Right Wheel     -> RR
  *     Arm
- *         Right Arm motor      -> RightArm
- *         Left Arm motor       -> LeftArm
+ *          Arm motor            -> Arm
  *     Lift
  *          Lift motor          -> Lift
  *     Hang
