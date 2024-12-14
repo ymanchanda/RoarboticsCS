@@ -4,10 +4,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.team.auto.ITDBaseLACH;
-import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDArmStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 
 
 /*
@@ -41,21 +39,10 @@ import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
  *          Dpad-down                   ->
  *
  */
-@TeleOp(name = "ITD TeleOp CHALLC", group = "Main")
-public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
+@TeleOp(name = "ITD TeleOp CC", group = "Main")
+public class ITDTeleopCC_Test extends ITDTeleopRobotCHALLC {
 
     private double currentTime = 0; // keep track of current time
-    private double speedMultiplier = 0.7;
-    //these are based on LiftTest
-    private static final double Out = -5d;
-    private static final double In = -2.5d;
-    private static final double PickUp = 2.5d;
-    private static final double Drop = 7d;
-
-
-
-
-
     private Pose2d poseEstimate;
 
     @Override
@@ -73,38 +60,6 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
         super.loop();
         drive.update();
         poseEstimate = drive.getPoseEstimate();
-//---------------------------------------------------------------------------------------------------------------------------------------------------------
-        //Gamepad 1
-
-        drive.setWeightedDrivePower(
-                new Pose2d(
-                        -gamepad1.left_stick_y * speedMultiplier,
-                        -gamepad1.left_stick_x * speedMultiplier,
-                        -gamepad1.right_stick_x * speedMultiplier
-                )
-        );
-
-        //This changes the speed the robot moves at
-        if (getEnhancedGamepad1().isLeftBumperJustPressed()) {
-            speedMultiplier = 0.7;
-        }
-        if (getEnhancedGamepad1().isRightBumperJustPressed()) {
-            speedMultiplier = 1.0;
-        }
-
-        //Arm
-        if (getEnhancedGamepad1().getLeft_trigger() > 0) {
-            drive.robot.getITDArmSubsystem().setSetpoint(PickUp);
-        }
-        if (getEnhancedGamepad1().getRight_trigger() > 0) {
-            drive.robot.getITDArmSubsystem().setSetpoint(Drop);
-        }
-        if (getEnhancedGamepad1().isxJustPressed()) {
-            drive.robot.getITDArmSubsystem().retract();
-        }
-
-
-
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
         //Gamepad 2
@@ -117,34 +72,19 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
         if (getEnhancedGamepad2().getRight_trigger() > 0) {
             drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.DROP);
         }
+        if (getEnhancedGamepad1().isxJustPressed()) {
+            drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.IDLE);
+        }
 
         //Claw
-        if (getEnhancedGamepad2().getLeft_trigger() > 0) {
+        if (getEnhancedGamepad2().isRightBumperJustPressed()) {
             drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
         }
-        if (getEnhancedGamepad2().getRight_trigger() > 0) {
+        if (getEnhancedGamepad2().isLeftBumperJustPressed()) {
             drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
         }
 
-        //Lift
-        if(getEnhancedGamepad2().isyJustPressed()){
-            drive.robot.getITDLiftSubsystem().extend(Out);
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
-        }
-        if(getEnhancedGamepad2().isbJustPressed()){
-            drive.robot.getITDLiftSubsystem().extend(In);
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
-        }
-        if(getEnhancedGamepad2().isaJustPressed()){
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
-                drive.robot.getITDLiftSubsystem().retract();
-            }
 
-        telemetry.addData("Lift State: ", drive.robot.getITDLiftSubsystem().getStateMachine().getState());
-        telemetry.addData("Arm State: ", drive.robot.getITDArmSubsystem().getStateMachine().getState());
         telemetry.addData("Claw: ", drive.robot.getITDClawSubsystem().getStateMachine().getState());
         telemetry.addData("ClawArm: ", drive.robot.getITDClawArmSubsystem().getStateMachine().getState());
 

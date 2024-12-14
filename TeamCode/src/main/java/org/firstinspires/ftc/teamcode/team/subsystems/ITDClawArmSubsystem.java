@@ -36,7 +36,7 @@ public class ITDClawArmSubsystem implements ISubsystem<ITDClawArmStateMachine, I
 
     @Override
     public String getName() {
-        return "Gripper Subsystem";
+        return "Claw Arm Subsystem";
     }
 
     @Override
