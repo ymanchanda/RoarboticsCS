@@ -29,8 +29,8 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
     private static final double hook2 = 4.7d;
 
 
-    static final Vector2d path0 = new Vector2d(36 ,0); // blue left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path1 = new Vector2d(48 + (length/2), -48 - (width/2));
+    static final Vector2d path0 = new Vector2d(-36 ,0);
+    static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
     static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
 
 
@@ -59,7 +59,7 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
 
     State currentState = State.IDLE;
 
-    Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
+    Pose2d startPoseBL = new Pose2d(- 72 + (length/2), -24 + (width/2));
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm

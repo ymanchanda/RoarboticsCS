@@ -10,14 +10,12 @@ import org.firstinspires.ftc.teamcode.lib.util.TimeProfiler;
 import org.firstinspires.ftc.teamcode.lib.util.TimeUnits;
 import org.firstinspires.ftc.teamcode.team.PoseStorage;
 import org.firstinspires.ftc.teamcode.team.odometry.trajectorysequence.TrajectorySequence;
-
-
-import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
+import org.firstinspires.ftc.teamcode.team.states.ITDLiftStateMachine;
 
 
-@Autonomous(name = "Blue Left Obs", group = "Pixel")
+@Autonomous(name = "Blue Left OBS", group = "Pixel")
 public class BlueLeftITDOBS extends LinearOpMode { //updated
 
 
@@ -34,6 +32,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
     static final Vector2d path0 = new Vector2d(-36 ,0); // blue left, not confirmed, maybe change y to a different location for space
     static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
     static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
+
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -59,9 +58,9 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
         PARK,
     }
 
-    org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.IDLE;
+    BlueLeftITDOBS.State currentState = BlueLeftITDOBS.State.IDLE;
 
-    Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
+    Pose2d startPoseBL = new Pose2d(- 72 + (length/2), 24 + (width/2));
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
@@ -125,7 +124,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
         if (isStopRequested()) return;
 
-        currentState = org.firstinspires.ftc.teamcode.team.auto.BlueLeftITDOBS.State.WAIT0;
+        currentState = BlueLeftITDOBS.State.WAIT0;
 
         while (opModeIsActive() && !isStopRequested()) {
 
@@ -134,8 +133,8 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
             switch (currentState) {
 
                 case WAIT0:
-                    if (waitTimer.milliseconds() >= 7000)
-                        currentState = State.PARK;
+                    if (waitTimer.milliseconds() >= 200)
+                        currentState = State.CLAWCLOSE;
                     waitTimer.reset();
                     telemetry.addLine("in the wait0 state");
                     break;
@@ -267,6 +266,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
                 case PARK://parks in observation zone
                     drive.followTrajectorySequenceAsync(P2);
+                    drive.robot.getITDLiftSubsystem().extend(LOWBAR);
                     currentState = State.IDLE;
                     break;
 

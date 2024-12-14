@@ -31,7 +31,7 @@ public class RedRightITDOBS extends LinearOpMode { //updated
 
     static final Vector2d path0 = new Vector2d(36 ,0); // blue left, not confirmed, maybe change y to a different location for space
     static final Vector2d path1 = new Vector2d(48 + (length/2), -48 - (width/2));
-    static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
+    static final Vector2d path2 = new Vector2d(72 - (width/2),-52); //observation zone
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -59,7 +59,7 @@ public class RedRightITDOBS extends LinearOpMode { //updated
 
     State currentState = State.IDLE;
 
-    Pose2d startPoseBL = new Pose2d(- 72 + (15.125/2), 24 - (16.375/2)); //-72, 24 not confirmed
+    Pose2d startPoseRR = new Pose2d( 72 - (length/2), 24 - (width/2)); //-72, 24 not confirmed
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
@@ -74,11 +74,11 @@ public class RedRightITDOBS extends LinearOpMode { //updated
         setUpdateRuntime(new TimeProfiler(false));
 
         drive = new ITDBaseLACH(hardwareMap);
-        drive.setPoseEstimate(startPoseBL);
+        drive.setPoseEstimate(startPoseRR);
         drive.robot.getITDLiftSubsystem().getStateMachine().updateState(ITDLiftStateMachine.State.IDLE);
         drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
 
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseBL)
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseRR)
                 .lineTo(path0)
                 .build();
 
