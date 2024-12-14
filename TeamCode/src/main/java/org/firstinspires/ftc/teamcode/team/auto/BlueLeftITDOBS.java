@@ -29,9 +29,9 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
     private static final double hook2 = 4.7d;
 
 
-    static final Vector2d path0 = new Vector2d(-36 ,0); // blue left, not confirmed, maybe change y to a different location for space
-    static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
-    static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
+    static final Vector2d path0 = new Vector2d(-36 ,0);
+    static final Vector2d path1 = new Vector2d(-55.5, 56.3);
+    static final Vector2d path2 = new Vector2d(-63.9,-60); //observation zone
 
 
 
@@ -60,7 +60,7 @@ public class BlueLeftITDOBS extends LinearOpMode { //updated
 
     BlueLeftITDOBS.State currentState = BlueLeftITDOBS.State.IDLE;
 
-    Pose2d startPoseBL = new Pose2d(- 72 + (length/2), 24 + (width/2));
+    Pose2d startPoseBL = new Pose2d(-64.3, 32.3);
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm

@@ -30,8 +30,8 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
 
 
     static final Vector2d path0 = new Vector2d(-36 ,0);
-    static final Vector2d path1 = new Vector2d(-48 - (length/2), 48 + (width/2));
-    static final Vector2d path2 = new Vector2d(-72 + (width/2),-52); //observation zone
+    static final Vector2d path1 = new Vector2d(-55.5, 56.3);
+    static final Vector2d path2 = new Vector2d(-63.9,-60); //observation zone
 
 
     //ElapsedTime carouselTime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -59,7 +59,7 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
 
     State currentState = State.IDLE;
 
-    Pose2d startPoseBR = new Pose2d(- 72 + (length/2), -24 + (width/2));
+    Pose2d startPoseBR = new Pose2d(-64.3, -15.7);
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
