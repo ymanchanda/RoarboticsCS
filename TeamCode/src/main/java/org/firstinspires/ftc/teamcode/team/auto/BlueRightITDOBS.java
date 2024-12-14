@@ -59,7 +59,7 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
 
     State currentState = State.IDLE;
 
-    Pose2d startPoseBL = new Pose2d(- 72 + (length/2), -24 + (width/2));
+    Pose2d startPoseBR = new Pose2d(- 72 + (length/2), -24 + (width/2));
     //lift test needs to be done (values are estimated/inaccurate)
     private static final double HIGHBAR = 0d; //36 inches, 91.4 cm
     private static final double LOWBAR = 0d; //20 inches, 50.8 cm
@@ -74,11 +74,11 @@ public class BlueRightITDOBS extends LinearOpMode { //updated
         setUpdateRuntime(new TimeProfiler(false));
 
         drive = new ITDBaseLACH(hardwareMap);
-        drive.setPoseEstimate(startPoseBL);
+        drive.setPoseEstimate(startPoseBR);
         drive.robot.getITDLiftSubsystem().getStateMachine().updateState(ITDLiftStateMachine.State.IDLE);
         drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
 
-        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseBL)
+        TrajectorySequence P0 = drive.trajectorySequenceBuilder(startPoseBR)
                 .lineTo(path0)
                 .build();
 
