@@ -20,7 +20,7 @@ public class ITDClawArmStateMachine extends TimedState<ITDClawArmStateMachine.St
     }
 
     public enum State implements Namable {
-        PICKUP("PickUp",0.45d), DROP("Drop", 1d), IDLE("Idle", -0.1d);
+        PICKUP("PickUp",0.45d), DROP("Drop", 1d), PARALEL("Paralel", 0.8d), IDLE("Idle", -0.1d);
 
         private final String name;
         private final double Position;

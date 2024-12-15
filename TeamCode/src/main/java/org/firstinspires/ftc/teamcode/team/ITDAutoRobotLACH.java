@@ -72,7 +72,7 @@ public class ITDAutoRobotLACH {
 //        );
 
         setMotors(new RevMotor[] {
-                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, true, false, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
+                new RevMotor((ExpansionHubMotor)(hardwareMap.get("Lift")), false, true, true, true, Motor.GOBILDA_312_RPM.getENCODER_TICKS_PER_REVOLUTION(), 1.503937), //38.2mm diameter
                 new RevMotor((ExpansionHubMotor)(hardwareMap.get("Arm")), true, true, true, true, Motor.GOBILDA_117_RPM.getENCODER_TICKS_PER_REVOLUTION(), 0.7402879093),
         });
 

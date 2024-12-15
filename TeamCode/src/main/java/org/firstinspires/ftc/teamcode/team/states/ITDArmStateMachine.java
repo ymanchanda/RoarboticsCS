@@ -19,7 +19,7 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
     private State desiredState;
 
     public ITDArmStateMachine(ITDArmSubsystem itdArmSubsystem) {
-        setItdLiftSubsystem(itdArmSubsystem);
+        setItdArmSubsystem(itdArmSubsystem);
         setState(State.IDLE);
         setDesiredState(State.IDLE);
     }
@@ -79,7 +79,7 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
     private void setDesiredState(State desiredState) {this.desiredState = desiredState;}
 
     public enum State implements Namable {
-        IDLE("Idle"), EXTEND("Up"), RETRACT("Down");
+        IDLE("Idle"), UP("Up"), DOWN("Down");
 
         private final String name;
 
@@ -97,7 +97,7 @@ public class ITDArmStateMachine implements IState<ITDArmStateMachine.State> {
         return itdArmSubsystem;
     }
 
-    public void setItdLiftSubsystem(ITDArmSubsystem itdArmSubsystem) {this.itdArmSubsystem = itdArmSubsystem;}
+    public void setItdArmSubsystem(ITDArmSubsystem itdArmSubsystem) {this.itdArmSubsystem = itdArmSubsystem;}
 
     public static DoubleConsumer getRunExtension() {return runExtension;}
 

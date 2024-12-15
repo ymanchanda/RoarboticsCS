@@ -47,10 +47,11 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
     private double currentTime = 0; // keep track of current time
     private double speedMultiplier = 0.7;
     //these are based on LiftTest
-    private static final double Out = -5d;
-    private static final double In = -2.5d;
-    private static final double PickUp = 2.5d;
-    private static final double Drop = 7d;
+    private static final double Out = 14d;
+    private static final double In = 8d;
+    private static final double High = 17d;
+    private static final double PickUp = 3d;
+    private static final double Drop = 4.7d;
 
 
 
@@ -127,21 +128,18 @@ public class ITDTeleopCHALLC extends ITDTeleopRobotCHALLC {
         }
 
         //Lift
-        if(getEnhancedGamepad2().isyJustPressed()){
-            drive.robot.getITDLiftSubsystem().extend(Out);
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
+        if(getEnhancedGamepad2().isDpadUpJustPressed()){
+            drive.robot.getITDLiftSubsystem().extend(High);
         }
-        if(getEnhancedGamepad2().isbJustPressed()){
+        if(getEnhancedGamepad2().isDpadRightJustPressed()){
+            drive.robot.getITDLiftSubsystem().extend(Out);
+        }
+        if(getEnhancedGamepad2().isDpadLeftJustPressed()){
             drive.robot.getITDLiftSubsystem().extend(In);
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
         }
         if(getEnhancedGamepad2().isaJustPressed()){
-            double lastSetPoint = drive.robot.getITDLiftSubsystem().getDesiredSetpoint();
-            telemetry.addData("Lift State: ", lastSetPoint);
-                drive.robot.getITDLiftSubsystem().retract();
-            }
+            drive.robot.getITDLiftSubsystem().retract();
+        }
 
         telemetry.addData("Lift State: ", drive.robot.getITDLiftSubsystem().getStateMachine().getState());
         telemetry.addData("Arm State: ", drive.robot.getITDArmSubsystem().getStateMachine().getState());

@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.team.auto.ITDBaseLACH;
 import org.firstinspires.ftc.teamcode.team.states.ITDClawArmStateMachine;
-import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
 
 
 /*
@@ -39,10 +38,18 @@ import org.firstinspires.ftc.teamcode.team.states.ITDClawStateMachine;
  *          Dpad-down                   ->
  *
  */
-@TeleOp(name = "ITD TeleOp CC", group = "Main")
-public class ITDTeleopCC_Test extends ITDTeleopRobotCHALLC {
+@TeleOp(name = "ITD TeleOp AL", group = "Main")
+public class ITDTeleopAL_Test extends ITDTeleopRobotCHALLC {
 
     private double currentTime = 0; // keep track of current time
+    //these are based on LiftTest
+    private static final double Out = 17d;
+    private static final double In = 10d;
+    private static final double High = 22d;
+    private static final double PickUp = 4d;
+    private static final double Drop = 6d;
+
+
     private Pose2d poseEstimate;
 
     @Override
@@ -60,33 +67,43 @@ public class ITDTeleopCC_Test extends ITDTeleopRobotCHALLC {
         super.loop();
         drive.update();
         poseEstimate = drive.getPoseEstimate();
-
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
-        //Gamepad 2
+        //Gamepad 1
 
-
-        //ClawArm
-        if (getEnhancedGamepad2().getLeft_trigger() > 0) {
-            drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.PICKUP);
+        //Arm
+        while(getEnhancedGamepad1().isRightBumperJustPressed()){
+            drive.robot.getITDArmSubsystem().setSetpoint(+1);
         }
-        if (getEnhancedGamepad2().getRight_trigger() > 0) {
-            drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.DROP);
+        if (getEnhancedGamepad1().isDpadDownJustPressed()) {
+            drive.robot.getITDArmSubsystem().setSetpoint(PickUp);
+        }
+        if (getEnhancedGamepad1().getRight_trigger() > 0) {
+            drive.robot.getITDArmSubsystem().setSetpoint(Drop);
         }
         if (getEnhancedGamepad1().isxJustPressed()) {
-            drive.robot.getITDClawArmSubsystem().getStateMachine().updateState(ITDClawArmStateMachine.State.PARALEL);
+            drive.robot.getITDArmSubsystem().retract();
+        }
+        if (getEnhancedGamepad1().isDpadDownJustPressed()) {
+            drive.robot.getITDArmSubsystem().setSetpoint(-7);
         }
 
-        //Claw
-        if (getEnhancedGamepad2().isbJustPressed()) {
-            drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.OPEN);
+        //Lift
+        if(getEnhancedGamepad1().isDpadRightJustPressed()){
+            drive.robot.getITDLiftSubsystem().extend(High);
         }
-        if (getEnhancedGamepad2().isaJustPressed()) {
-            drive.robot.getITDClawSubsystem().getStateMachine().updateState(ITDClawStateMachine.State.CLOSE);
+        if(getEnhancedGamepad1().isyJustPressed()){
+            drive.robot.getITDLiftSubsystem().extend(Out);
         }
+        if(getEnhancedGamepad1().isbJustPressed()){
+            drive.robot.getITDLiftSubsystem().extend(In);
+        }
+        if(getEnhancedGamepad1().isaJustPressed()){
+            drive.robot.getITDLiftSubsystem().retract();
+            }
 
 
-        telemetry.addData("Claw: ", drive.robot.getITDClawSubsystem().getStateMachine().getState());
-        telemetry.addData("ClawArm: ", drive.robot.getITDClawArmSubsystem().getStateMachine().getState());
+        telemetry.addData("Lift State: ", drive.robot.getITDLiftSubsystem().getStateMachine().getState());
+        telemetry.addData("Arm State: ", drive.robot.getITDArmSubsystem().getStateMachine().getState());
 
 
         updateTelemetry(telemetry);
